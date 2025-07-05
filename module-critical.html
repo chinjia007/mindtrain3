@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批判性思维 - 神奇喵喵思维训练实验室</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/course-navigation.css">
+    <link rel="stylesheet" href="assets/css/loading-animation.css">
+    <link rel="stylesheet" href="assets/css/pixel-cat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- AIGC神经网络背景 -->
+    <div class="generative-background">
+        <canvas class="neural-art" id="neuralCanvas"></canvas>
+    </div>
+    
+    <!-- 分离式品牌标题 -->
+    <header class="split-brand-header">
+        <div class="brand-left">
+            <h1 class="artistic-brand-title">神奇喵喵</h1>
+            <p class="artistic-brand-subtitle-below">思维训练实验室</p>
+        </div>
+        <div class="brand-right">
+            <a href="index.html" class="home-button">
+                <svg class="home-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>返回主页</span>
+            </a>
+        </div>
+    </header>
+    
+    <!-- 模块主体 -->
+    <main class="module-main module-critical">
+        <!-- 模块头部 -->
+        <div class="module-header">
+            <div class="module-icon-large">🔍</div>
+            <h1 class="module-title">批判性思维</h1>
+            <p class="module-subtitle">解构信息迷雾，重构真相本质</p>
+            <div class="module-stats">
+                <div class="stat-item">
+                    <span class="stat-number">30</span>
+                    <span class="stat-label">课程总数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">学习层级</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0%</span>
+                    <span class="stat-label">完成进度</span>
+                </div>
+            </div>
+            <a href="quiz.html?module=critical" class="enter-quiz-btn">进入训练场</a>
+        </div>
+
+        <!-- 学习路径 - 无缝网格 -->
+        <div class="learning-path" id="learningPath"><!-- 动态生成 --></div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="simple-footer">
+        <div class="footer-content">
+            <nav class="footer-nav">
+                <a href="index.html" class="footer-link">返回首页</a>
+                <a href="index.html#modules" class="footer-link">其他模块</a>
+                <a href="quiz.html" class="footer-link">训练场</a>
+            </nav>
+            <p>&copy; 2025 神奇喵喵思维训练实验室. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/loading-animation.js"></script>
+    <script src="assets/js/neural-art.js"></script>
+    <script src="assets/js/pixel-cat.js"></script>
+    <script src="assets/js/card-title-enhancer.js"></script>
+    <script src="assets/js/chat-assistant.js" defer></script>
+    <script>
+        // 批判性思维模块动态渲染
+        class CriticalThinkingModule {
+            async init() {
+                try {
+                    const res = await fetch('json-data/courses-index.json');
+                    const data = await res.json();
+                    this.render(data.courses);
+                } catch(e) { console.error(e); }
+            }
+
+            render(allCourses){
+                const criticalCourses = allCourses.filter(c=>
+                     c.filename.includes('批判性思维') ||
+                     c.moduleName==='批判性思维模块' ||
+                     (c.id>=1&&c.id<=10) || (c.id>=43&&c.id<=52) || (c.id>=85&&c.id<=94)
+                 );
+
+                // 分级
+                const levels = {
+                    beginner: criticalCourses.filter(c=>c.id>=1 && c.id<=10),
+                    intermediate: criticalCourses.filter(c=>c.id>=43 && c.id<=52),
+                    advanced: criticalCourses.filter(c=>c.id>=85 && c.id<=94)
+                };
+
+                const orderedCourses = [];
+                Object.entries(levels).forEach(([levelKey, arr])=>{
+                    orderedCourses.push(...arr.map(c=>({...c, levelKey})));
+                });
+
+                const difficultyMap = {
+                    beginner:{ label:'入门级', class:'beginner'},
+                    intermediate:{ label:'基础级', class:'intermediate'},
+                    advanced:{ label:'进阶级', class:'advanced'}
+                };
+
+                const path=document.getElementById('learningPath');
+                path.innerHTML = orderedCourses.map((course,idx)=>{
+                    const diff=difficultyMap[course.levelKey]||difficultyMap.beginner;
+                    return `<a href="course-detail.html?id=${course.id}" class="course-card" data-level="${course.levelKey}">
+                        <div class="difficulty-label ${diff.class}">${diff.label}</div>
+                        <div class="course-card-header"><div class="course-number">${String(idx+1).padStart(2,'0')}</div><div class="difficulty-badge ${diff.class}"></div></div>
+                        <h3 class="course-title">${course.title.replace(/^第\d+课：/, '')}</h3>
+                        <div class="course-meta"><span>⏱️ ${course.duration||'25分钟'}</span><span>•</span><span>未开始</span></div>
+                    </a>`;
+                }).join('');
+
+                // 添加补充包卡片
+                path.innerHTML+=`<a href="course-detail.html?id=142" class="course-card extension" data-level="extension"><div class="difficulty-label extension">补充包</div><div class="course-card-header"><div class="course-number">补充</div><div class="difficulty-badge extension"></div></div><h3 class="course-title">深度案例补充包</h3><div class="course-meta"><span>🔍 高级思考</span></div></a>`;
+
+                // 更新统计
+                document.querySelector('.module-stats .stat-number').textContent=criticalCourses.length;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded',()=>{new CriticalThinkingModule().init();});
+    </script>
+</body>
+</html>

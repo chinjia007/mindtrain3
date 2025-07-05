@@ -1,0 +1,372 @@
+/* quiz.css - Inherits from main.css */
+
+/* =================================== */
+/*          QUIZ PAGE STYLES           */
+/* =================================== */
+
+/* --- Body & Main Layout --- */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.quiz-main-grid {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: var(--spacing-xl) var(--spacing-md);
+    /* The main padding-top is now handled by the main element itself */
+}
+
+main {
+    padding-top: 120px; /* Explicitly set padding to clear the fixed header */
+}
+
+.interaction-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* --- Typography & Titles --- */
+#question-area h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 4vw, 2.2rem); /* Slightly increased max size */
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* --- Scenario & Generic Info Card --- */
+/* This is the sticky container for the scenario */
+#scenario-container {
+    position: sticky;
+    top: 120px; /* Correct offset to be below the header */
+    z-index: 900;
+    /* The backdrop filter needs a background color with transparency to work */
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* Apply card styles directly here for the sticky element */
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-medium); /* A slightly stronger shadow to lift it */
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Generic styles for other non-sticky cards, like in the feedback section */
+.info-card {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Card Headers */
+.info-card h3,
+#scenario-container h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--primary-color-light);
+    display: inline-block;
+}
+
+/* --- Options Grid --- */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default to single column */
+    gap: var(--spacing-md);
+}
+
+/* Dynamic grid classes to be applied by JS */
+.options-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.options-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.options-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.option-card {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--surface-color);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--transition-medium);
+    box-shadow: var(--shadow-soft);
+}
+
+.option-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-color-light);
+    box-shadow: var(--shadow-medium);
+}
+
+.option-card.selected {
+    border-color: var(--primary-color);
+    background-color: #eef2ff; /* Using a direct value for clarity */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(74, 105, 189, 0.2);
+}
+
+.option-letter {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin-right: var(--spacing-md);
+    border-radius: 50%;
+    background-color: var(--border-color);
+    color: var(--text-color-light);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    transition: all var(--transition-medium);
+}
+
+.option-card.selected .option-letter {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* --- Feedback States for Options --- */
+.option-card.correct {
+    border-color: var(--success-color);
+    background-color: var(--success-bg-color);
+}
+.option-card.correct .option-letter {
+    background-color: var(--success-color);
+    color: white;
+}
+.option-card.incorrect {
+    border-color: var(--error-color);
+    background-color: var(--error-bg-color);
+}
+.option-card.incorrect .option-letter {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* --- Feedback Section --- */
+#feedback-container {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    margin-top: var(--spacing-xl);
+}
+
+#feedback-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feedback-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+}
+
+.feedback-card {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+}
+
+.feedback-card h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--accent-color-light);
+}
+
+.feedback-card ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.feedback-card li {
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.feedback-card li:last-child {
+    border-bottom: none;
+}
+
+#feedback-analysis .analysis-item.correct {
+    color: var(--success-color);
+    font-weight: 500;
+}
+#feedback-analysis .analysis-item.correct::before {
+    content: '✔ ';
+    font-weight: 700;
+}
+#feedback-analysis .analysis-item.incorrect {
+    color: var(--error-color);
+    font-weight: 500;
+}
+#feedback-analysis .analysis-item.incorrect::before {
+    content: '✖ ';
+    font-weight: 700;
+}
+#feedback-analysis .analysis-item b,
+#feedback-analysis .analysis-item strong {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+#feedback-response-ref h4 {
+    font-size: 1.1rem;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary-color-dark);
+}
+#feedback-response-ref h4:first-child { margin-top: 0; }
+#feedback-response-ref .strategy-details p {
+    margin: var(--spacing-md) 0 var(--spacing-sm);
+    font-weight: 600;
+}
+#feedback-response-ref .other-strategies-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    list-style-type: none;
+    padding: 0;
+}
+#feedback-response-ref .other-strategies-list li {
+    background-color: var(--bg-color);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 15px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border-color);
+}
+
+/* --- Action Footer & Submit Button --- */
+.action-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--spacing-md) 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 30%, white 100%);
+    text-align: center;
+    z-index: 1000;
+}
+
+.action-btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 50px; /* Fully rounded */
+    cursor: pointer;
+    box-shadow: var(--shadow-medium);
+    transition: all var(--transition-medium);
+}
+
+.action-btn:hover:not(:disabled) {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-strong);
+}
+
+.action-btn:disabled {
+    background-color: var(--border-color);
+    color: var(--text-color-light);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* --- Progress Bar (in Header) --- */
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+}
+.progress-bar-wrapper {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e5ea;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out;
+}
+#progress-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+}
+
+
+/* --- Completion & Error Screens --- */
+.completion-container, .error-message {
+    text-align: center;
+    background-color: var(--surface-color);
+    padding: var(--spacing-xxl) var(--spacing-xl);
+    border-radius: 20px;
+    box-shadow: var(--shadow-medium);
+    max-width: 600px;
+    margin: 4rem auto; /* Give it some vertical margin */
+}
+.completion-container h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+}
+.completion-container p {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-xl);
+}
+.completion-container .action-btn {
+    margin: 0 var(--spacing-sm);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 1.2rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .quiz-main-grid {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    #question-area h2 {
+        font-size: 1.5rem;
+    }
+    .options-grid,
+    .options-grid.cols-2,
+    .options-grid.cols-3,
+    .options-grid.cols-4 {
+        grid-template-columns: 1fr;
+    }
+    #scenario-container {
+        /* On smaller screens, make the sticky offset less to save space */
+        top: 100px;
+    }
+    main {
+        padding-top: 100px;
+    }
+} 

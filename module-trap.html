@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一叶知秋 - 神奇喵喵思维训练实验室</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/course-navigation.css">
+    <link rel="stylesheet" href="assets/css/loading-animation.css">
+    <link rel="stylesheet" href="assets/css/pixel-cat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- AIGC神经网络背景 -->
+    <div class="generative-background">
+        <canvas class="neural-art" id="neuralCanvas"></canvas>
+    </div>
+    
+    <!-- 分离式品牌标题 -->
+    <header class="split-brand-header">
+        <div class="brand-left">
+            <h1 class="artistic-brand-title">神奇喵喵</h1>
+            <p class="artistic-brand-subtitle-below">思维训练实验室</p>
+        </div>
+        <div class="brand-right">
+            <a href="index.html" class="home-button">
+                <svg class="home-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>返回主页</span>
+            </a>
+        </div>
+    </header>
+    
+    <!-- 模块主体 -->
+    <main class="module-main module-trap">
+        <!-- 模块头部 -->
+        <div class="module-header">
+            <div class="module-icon-large">👁️</div>
+            <h1 class="module-title">一叶知秋</h1>
+            <p class="module-subtitle">识破语言陷阱，守护思维清明</p>
+            <div class="module-stats">
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">语言陷阱</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1</span>
+                    <span class="stat-label">防御体系</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0%</span>
+                    <span class="stat-label">完成进度</span>
+                </div>
+            </div>
+            <a href="quiz.html?module=trap" class="enter-quiz-btn">进入训练场</a>
+        </div>
+
+        <!-- 学习路径 - 无缝网格 -->
+        <div class="learning-path" id="learningPath">
+            <!-- 一叶知秋课程 -->
+            <a href="course-detail.html?id=125" class="course-card" data-level="beginner">
+                <div class="difficulty-label beginner">入门级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第125课</div>
+                    <div class="difficulty-badge beginner"></div>
+                </div>
+                <h3 class="course-title">如何不被错误信息所误导（上）- 数字与权威陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 35分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=126" class="course-card" data-level="intermediate">
+                <div class="difficulty-label intermediate">基础级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第126课</div>
+                    <div class="difficulty-badge intermediate"></div>
+                </div>
+                <h3 class="course-title">如何不被错误信息所误导（中）- 逻辑与关联陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 38分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=127" class="course-card" data-level="advanced">
+                <div class="difficulty-label advanced">进阶级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第127课</div>
+                    <div class="difficulty-badge advanced"></div>
+                </div>
+                <h3 class="course-title">如何不被错误信息所误导（下）- 样本与传统陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 40分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=128" class="course-card" data-level="expert">
+                <div class="difficulty-label expert">高级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第128课</div>
+                    <div class="difficulty-badge expert"></div>
+                </div>
+                <h3 class="course-title">如何避免在压力下做出错误决定（上）- 选择与时间陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 42分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=129" class="course-card" data-level="expert">
+                <div class="difficulty-label expert">高级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第129课</div>
+                    <div class="difficulty-badge expert"></div>
+                </div>
+                <h3 class="course-title">如何避免在压力下做出错误决定（下）- 恐惧与后果陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 45分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=130" class="course-card" data-level="master">
+                <div class="difficulty-label master">精通级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第130课</div>
+                    <div class="difficulty-badge master"></div>
+                </div>
+                <h3 class="course-title">如何在干扰中保持清晰思考（上）- 情感操控陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 48分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=131" class="course-card" data-level="master">
+                <div class="difficulty-label master">精通级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第131课</div>
+                    <div class="difficulty-badge master"></div>
+                </div>
+                <h3 class="course-title">如何在干扰中保持清晰思考（下）- 信息干扰陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 50分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=132" class="course-card" data-level="master">
+                <div class="difficulty-label master">精通级</div>
+                <div class="course-card-header">
+                    <div class="course-number">第132课</div>
+                    <div class="difficulty-badge master"></div>
+                </div>
+                <h3 class="course-title">如何应对语言攻击和话语陷阱</h3>
+                <div class="course-meta">
+                    <span>⏱️ 52分钟</span>
+                    <span>•</span>
+                    <span>未开始</span>
+                </div>
+            </a>
+
+            <a href="course-detail.html?id=141" class="course-card extension" data-level="extension">
+                <div class="difficulty-label extension">补充包</div>
+                <div class="course-card-header">
+                    <div class="course-number">补充</div>
+                    <div class="difficulty-badge extension"></div>
+                </div>
+                <h3 class="course-title">灰色地带案例补充包</h3>
+                <div class="course-meta">
+                    <span>🔍 高级思考</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="simple-footer">
+        <div class="footer-content">
+            <nav class="footer-nav">
+                <a href="index.html" class="footer-link">返回首页</a>
+                <a href="index.html#modules" class="footer-link">其他模块</a>
+                <a href="quiz.html?module=trap" class="footer-link">训练场</a>
+                <a href="index.html#about" class="footer-link">关于我们</a>
+            </nav>
+            <p>&copy; 2025 神奇喵喵思维训练实验室. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/loading-animation.js"></script>
+    <script src="assets/js/neural-art.js"></script>
+    <script src="assets/js/pixel-cat.js"></script>
+    <script src="assets/js/card-title-enhancer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.learning-path .course-card:not(.extension)');
+            cards.forEach((card, idx) => {
+                const numEl = card.querySelector('.course-number');
+                if (numEl) {
+                    numEl.textContent = `${String(idx + 1).padStart(2, '0')}`;
+                }
+            });
+        });
+    </script>
+    <script src="assets/js/chat-assistant.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1330 @@
+/* 像素猫样式 - 来自juhe.html的增强版本 */
+
+:root {
+    --accent-color: #e74c3c;
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+}
+
+/* 像素猫容器 - 像素块风格 */
+.pixel-cat-container {
+    position: fixed;
+    bottom: 15px;
+    left: -80px;
+    width: 70px;
+    height: 60px;
+    z-index: 9998;
+    pointer-events: auto;
+    transform: scale(1);
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+    cursor: pointer;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* 增强像素感，添加全局像素栅格 */
+.pixel-cat {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: scale(1);
+    transform-origin: center center;
+}
+
+/* 像素风格变化时禁用平滑过渡 */
+.pixel-cat, .pixel-cat * {
+    transition: none;
+    animation-timing-function: steps(1) !important;
+}
+
+/* 全局像素栅格 - 移除多余的格子 */
+.pixel-cat-body {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: visible;
+    /* 移除背景网格，避免出现多余格子 */
+    background-image: none;
+}
+
+/* 猫咪像素网格效果 - 移除全局网格 */
+.pixel-cat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* 移除全局网格效果 */
+    background-image: none;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 猫咪身体 */
+.cat-body {
+    width: 32px;
+    height: 20px;
+    background-color: var(--accent-color);
+    position: absolute;
+    bottom: 12px;
+    left: 9px;
+    border-radius: 0;
+    z-index: 2;
+}
+
+/* 猫咪头部 - 优化像素网格效果 */
+.cat-head {
+    width: 28px;
+    height: 24px;
+    background-color: var(--accent-color);
+    position: absolute;
+    top: 8px;
+    left: 24px;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 2;
+    /* 只保留边缘线，形成更清晰的像素块感 */
+    background-image: none;
+    overflow: hidden;
+}
+
+/* 猫咪高亮 */
+.cat-highlight {
+    width: 8px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.3);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 0;
+}
+
+/* 猫咪耳朵 - 更小更尖的黑色倒三角耳朵 */
+.cat-ear {
+    width: 8px;
+    height: 10px;
+    background-color: #000;
+    position: absolute;
+    top: -6px;
+    z-index: 3;
+    transform: none;
+    /* 倒三角形 - 尖端向下 */
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.cat-ear.left {
+    left: 4px;
+}
+
+.cat-ear.right {
+    right: 4px;
+}
+
+.cat-inner-ear {
+    width: 3px;
+    height: 4px;
+    background-color: #d63031;
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+    /* 内耳也是倒三角形，尖端向下 */
+    clip-path: polygon(0 0, 100% 0, 50% 90%);
+}
+
+/* 猫咪脸部 */
+.cat-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 猫咪眼睛 - 像素风格 */
+.cat-eye {
+    width: 4px;
+    height: 4px;
+    background-color: #000;
+    position: absolute;
+    top: 10px;
+    border-radius: 0;
+    z-index: 5;
+    /* 添加眨眼动画 */
+    animation: cat-blink 4s infinite;
+}
+
+.cat-eye.left {
+    left: 6px;
+}
+
+.cat-eye.right {
+    right: 6px;
+}
+
+/* 猫咪鼻子 - 倒T形的上部 */
+.cat-nose {
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+    z-index: 5;
+}
+
+/* 猫咪嘴巴 - 倒T形的下部 */
+.cat-mouth {
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    position: absolute;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+    z-index: 5;
+}
+
+/* 嘴巴两侧 - 形成倒T的横线 */
+.cat-mouth::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    top: 0px;
+    left: -2px;
+    border-radius: 0;
+}
+
+.cat-mouth::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    top: 0px;
+    right: -2px;
+    border-radius: 0;
+}
+
+/* 猫咪舌头 */
+.cat-tongue {
+    width: 2px;
+    height: 3px;
+    background-color: #ff69b4;
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+    opacity: 0;
+}
+
+/* 猫咪胡须 - 像素风格 */
+.cat-whisker {
+    width: 8px;
+    height: 1px;
+    background-color: #000;
+    position: absolute;
+    top: 16px;
+    z-index: 4;
+}
+
+.cat-whisker.left-top {
+    left: -6px;
+    transform: rotate(-10deg);
+}
+
+.cat-whisker.left-bottom {
+    left: -6px;
+    top: 18px;
+    transform: rotate(10deg);
+}
+
+.cat-whisker.right-top {
+    right: -6px;
+    transform: rotate(10deg);
+}
+
+.cat-whisker.right-bottom {
+    right: -6px;
+    top: 18px;
+    transform: rotate(-10deg);
+}
+
+/* 猫咪尾巴 - 两块像素块组成 */
+.cat-tail {
+    width: 6px;
+    height: 8px;
+    background-color: var(--accent-color);
+    position: absolute;
+    bottom: 22px;
+    left: -4px;
+    border-radius: 0;
+    transform-origin: bottom center;
+    transform: rotate(135deg);
+    z-index: 0;
+}
+
+/* 尾巴第二段 - 像素块 */
+.cat-tail::before {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 6px;
+    background-color: var(--tail-color, var(--accent-color));
+    top: -4px;
+    left: 1px;
+    border-radius: 0;
+    transform: rotate(15deg);
+    transform-origin: bottom left;
+}
+
+/* 移除第三段 */
+.cat-tail::after {
+    display: none;
+}
+
+/* 猫咪腿部 - 移除腿部的网格效果 */
+.cat-leg {
+    width: 6px;
+    height: 10px;
+    background-color: var(--accent-color);
+    position: absolute;
+    bottom: 2px;
+    z-index: 2;
+    border-radius: 0;
+    /* 移除小块腿部上的网格 */
+    background-image: none;
+}
+
+.cat-leg.front-left {
+    left: 12px;
+}
+
+.cat-leg.front-right {
+    left: 20px;
+}
+
+.cat-leg.back-left {
+    left: 28px;
+}
+
+.cat-leg.back-right {
+    left: 36px;
+}
+
+/* 更明显的像素边框 */
+.cat-head, .cat-body, .cat-leg, .cat-tail {
+    box-shadow: 1px 0 0 0 rgba(0,0,0,0.5), 
+                0 1px 0 0 rgba(0,0,0,0.5), 
+                1px 1px 0 0 rgba(0,0,0,0.5);
+}
+
+/* 思考泡泡 - 镜像问题彻底修复 */
+.cat-bubble {
+    position: absolute;
+    top: -25px;
+    left: 15px;
+    background: white;
+    border-radius: 0;
+    padding: 4px;
+    font-size: 10px;
+    opacity: 0;
+    transition: none;
+    pointer-events: none;
+    box-shadow: 2px 0 0 rgba(0,0,0,0.5), 
+                0 2px 0 rgba(0,0,0,0.5), 
+                2px 2px 0 rgba(0,0,0,0.5);
+    max-width: 80px;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 9999;
+    font-family: 'Courier New', monospace;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    /* 重要：确保文字不会被镜像，使用独立的变换上下文 */
+    transform-style: preserve-3d;
+}
+
+/* 气泡位置现在通过JavaScript动态调整，移除静态CSS规则避免冲突 */
+
+.cat-bubble:after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 8px;
+    width: 8px;
+    height: 6px;
+    background-color: white;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.cat-bubble.visible {
+    opacity: 1;
+}
+
+/* 运动状态动画调整 */
+@keyframes cat-run {
+    0% {
+        height: 10px;
+    }
+    50% {
+        height: 6px;
+    }
+    100% {
+        height: 10px;
+    }
+}
+
+@keyframes tail-running {
+    0% {
+        transform: rotate(135deg);
+    }
+    50% {
+        transform: rotate(90deg);
+    }
+    100% {
+        transform: rotate(135deg);
+    }
+}
+
+/* 眨眼修改为像素风格 */
+.cat-eye.blink {
+    height: 2px;
+    top: 12px;
+}
+
+/* 特殊动作像素风格 */
+.pixel-cat.special-action {
+    animation: cat-pixel-jump 1s forwards;
+}
+
+@keyframes cat-pixel-jump {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-4px);
+    }
+    50% {
+        transform: translateY(-16px);
+    }
+    75% {
+        transform: translateY(-4px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* 猫咪动画和状态 - 像素风格 */
+.cat-tongue.visible {
+    opacity: 1;
+}
+
+/* 跑动时的腿部动画 */
+.pixel-cat.running .cat-leg {
+    animation: cat-run 0.4s infinite;
+}
+
+.pixel-cat.running .cat-leg.front-right,
+.pixel-cat.running .cat-leg.back-left {
+    animation-delay: 0.2s;
+}
+
+/* 猫咪状态动画 */
+.pixel-cat.running .cat-tail {
+    animation: tail-running 0.4s infinite alternate;
+}
+
+.pixel-cat.sitting .cat-body {
+    height: 16px;
+    bottom: 8px;
+    border-radius: 0;
+}
+
+.pixel-cat.sitting .cat-leg {
+    height: 6px;
+}
+
+.pixel-cat.sitting .cat-tail {
+    bottom: 20px;
+    animation: tail-sitting 2s infinite alternate;
+}
+
+.pixel-cat.licking .cat-leg.front-left {
+    height: 12px;
+    transform: rotate(45deg);
+    bottom: 6px;
+}
+
+.pixel-cat.licking .cat-tongue {
+    animation: lick 1s infinite;
+}
+
+/* 睡觉状态 - 趴下姿势 */
+.pixel-cat.sleeping .cat-body {
+    height: 8px;
+    bottom: 4px;
+    width: 28px;
+    border-radius: 0;
+}
+
+.pixel-cat.sleeping .cat-head {
+    bottom: 8px;
+    left: 20px;
+    transform: rotate(-15deg);
+}
+
+.pixel-cat.sleeping .cat-eye {
+    height: 1px;
+    top: 12px;
+    opacity: 0.8;
+}
+
+.pixel-cat.sleeping .cat-mouth {
+    width: 3px;
+    height: 2px;
+    border: none;
+    background-color: #222;
+    border-radius: 0;
+    opacity: 0.6;
+    top: 16px;
+}
+
+.pixel-cat.sleeping .cat-leg {
+    height: 3px;
+    bottom: 1px;
+}
+
+.pixel-cat.sleeping .cat-leg.front-left,
+.pixel-cat.sleeping .cat-leg.front-right {
+    bottom: 2px;
+    transform: rotate(45deg);
+}
+
+.pixel-cat.sleeping .cat-tail {
+    bottom: 8px;
+    left: -8px;
+    transform: rotate(180deg);
+    animation: tail-sleeping 3s infinite ease-in-out;
+}
+
+.pixel-cat.happy .cat-mouth {
+    width: 10px;
+    height: 4px;
+    border-top: 2px solid #222;
+    border-bottom: none;
+    top: 18px;
+}
+
+.pixel-cat.happy .cat-eye {
+    height: 4px;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 2px solid #222;
+    top: 10px;
+}
+
+.pixel-cat.excited .cat-tail {
+    animation: tail-excited 0.2s infinite alternate;
+}
+
+.pixel-cat.curious .cat-head {
+    animation: head-tilt 2s infinite alternate;
+}
+
+.pixel-cat.playing .cat-body {
+    animation: body-bounce 0.5s infinite alternate;
+}
+
+.pixel-cat.playing .cat-leg {
+    animation: leg-play 0.5s infinite alternate;
+}
+
+/* 扩展猫咪动画效果 */
+.pixel-cat.special-action .cat-tail {
+    animation: tail-excited 0.2s infinite alternate;
+}
+
+.pixel-cat.special-action .cat-leg {
+    animation: leg-play 0.3s infinite alternate;
+}
+
+/* 扩展对话泡泡效果 - 像素风格 */
+.cat-bubble.visible {
+    opacity: 1;
+    animation: bubble-pixel-pop 0.3s forwards;
+}
+
+@keyframes bubble-pixel-pop {
+    0% {
+        transform: scale(0.5);
+    }
+    33% {
+        transform: scale(0.8);
+    }
+    66% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 动画关键帧 - 像素风格 */
+@keyframes tail-sitting {
+    0% {
+        transform: rotate(135deg);
+    }
+    50% {
+        transform: rotate(105deg);
+    }
+    100% {
+        transform: rotate(135deg);
+    }
+}
+
+@keyframes lick {
+    0%, 100% {
+        opacity: 0;
+    }
+    30%, 70% {
+        opacity: 1;
+    }
+}
+
+@keyframes tail-excited {
+    0% {
+        transform: rotate(135deg);
+    }
+    25% {
+        transform: rotate(80deg);
+    }
+    50% {
+        transform: rotate(135deg);
+    }
+    75% {
+        transform: rotate(170deg);
+    }
+    100% {
+        transform: rotate(135deg);
+    }
+}
+
+@keyframes head-tilt {
+    0% {
+        transform: translateX(-2px);
+    }
+    100% {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes body-bounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes leg-play {
+    0% {
+        height: 6px;
+    }
+    100% {
+        height: 10px;
+    }
+}
+
+/* 耳朵摆动动画 */
+@keyframes ear-twitch {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-8deg);
+    }
+    75% {
+        transform: rotate(8deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* 新增动作状态 */
+
+/* 笑的表情 - 眼睛眯成线，嘴巴保持不变 */
+.pixel-cat.laughing .cat-eye {
+    height: 1px;
+    background-color: #222;
+    border-radius: 0;
+    top: 12px;
+    animation: eye-sparkle 1s infinite alternate;
+}
+
+/* 生气表情 - 眉毛皱起，眼睛变小 */
+.pixel-cat.angry .cat-eye {
+    height: 2px;
+    background-color: #d63031;
+    top: 11px;
+}
+
+.pixel-cat.angry .cat-eye::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 1px;
+    background-color: #222;
+    top: -2px;
+    left: 0;
+    transform: rotate(-15deg);
+}
+
+.pixel-cat.angry .cat-eye.right::before {
+    transform: rotate(15deg);
+}
+
+/* 惊讶表情 - 眼睛变大，嘴巴变圆 */
+.pixel-cat.surprised .cat-eye {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #222;
+    top: 10px;
+}
+
+.pixel-cat.surprised .cat-mouth {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid #222;
+    top: 16px;
+}
+
+/* 思考表情 - 眼睛向上看 */
+.pixel-cat.thinking .cat-eye {
+    top: 8px;
+    animation: eye-roll 3s infinite;
+}
+
+.pixel-cat.thinking .cat-head {
+    animation: head-scratch 2s infinite;
+}
+
+/* 害怕表情 - 眼睛颤抖 */
+.pixel-cat.scared .cat-eye {
+    animation: eye-shake 0.1s infinite;
+}
+
+.pixel-cat.scared .cat-body {
+    animation: body-tremble 0.2s infinite;
+}
+
+
+
+/* 困倦状态 - 眼睛慢慢闭合 */
+.pixel-cat.sleepy .cat-eye {
+    animation: sleepy-blink 2s infinite;
+}
+
+.pixel-cat.sleepy .cat-head {
+    animation: head-nod 3s infinite;
+}
+
+/* ==================== 新增积极可爱表情 ==================== */
+
+/* 开心笑容 - 眼睛弯成倒U形，嘴巴上扬 */
+.pixel-cat.smile .cat-eye {
+    width: 6px;
+    height: 3px;
+    background-color: transparent;
+    border-bottom: 2px solid #222;
+    border-radius: 0 0 6px 6px;
+    top: 10px;
+    animation: eye-sparkle 2s infinite alternate;
+}
+
+.pixel-cat.smile .cat-mouth {
+    width: 6px;
+    height: 3px;
+    background-color: transparent;
+    border-top: 2px solid #222;
+    border-radius: 6px 6px 0 0;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.smile .cat-mouth::before,
+.pixel-cat.smile .cat-mouth::after {
+    display: none;
+}
+
+/* 大笑表情 - 眼睛眯成倒V形，嘴巴张开 */
+.pixel-cat.laugh .cat-eye {
+    width: 8px;
+    height: 2px;
+    background-color: transparent;
+    border-bottom: 2px solid #222;
+    top: 11px;
+    transform: rotate(0deg);
+}
+
+.pixel-cat.laugh .cat-eye.left {
+    border-radius: 0 0 0 4px;
+    transform: rotate(-10deg);
+}
+
+.pixel-cat.laugh .cat-eye.right {
+    border-radius: 0 0 4px 0;
+    transform: rotate(10deg);
+}
+
+.pixel-cat.laugh .cat-mouth {
+    width: 8px;
+    height: 6px;
+    background-color: #222;
+    border-radius: 4px;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.laugh .cat-mouth::before,
+.pixel-cat.laugh .cat-mouth::after {
+    display: none;
+}
+
+/* 眯眼微笑 - 眼睛眯成线，嘴角微微上扬 */
+.pixel-cat.squint .cat-eye {
+    width: 6px;
+    height: 1px;
+    background-color: #222;
+    top: 12px;
+    border-radius: 0;
+}
+
+.pixel-cat.squint .cat-mouth {
+    width: 4px;
+    height: 2px;
+    background-color: transparent;
+    border-top: 1px solid #222;
+    border-radius: 4px 4px 0 0;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.squint .cat-mouth::before,
+.pixel-cat.squint .cat-mouth::after {
+    display: none;
+}
+
+/* 可爱眨眼 - 一只眼睛眨眼，另一只正常，嘴巴微笑 */
+.pixel-cat.wink .cat-eye.left {
+    height: 1px;
+    top: 12px;
+    background-color: #222;
+}
+
+.pixel-cat.wink .cat-eye.right {
+    width: 4px;
+    height: 4px;
+    background-color: #222;
+    top: 10px;
+}
+
+.pixel-cat.wink .cat-mouth {
+    width: 4px;
+    height: 2px;
+    background-color: transparent;
+    border-top: 1px solid #222;
+    border-radius: 3px 3px 0 0;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.wink .cat-mouth::before,
+.pixel-cat.wink .cat-mouth::after {
+    display: none;
+}
+
+/* 无辜表情 - 大眼睛，小嘴巴 */
+.pixel-cat.innocent .cat-eye {
+    width: 6px;
+    height: 6px;
+    background-color: #222;
+    border-radius: 50%;
+    top: 9px;
+    animation: innocent-blink 4s infinite;
+}
+
+.pixel-cat.innocent .cat-mouth {
+    width: 2px;
+    height: 2px;
+    background-color: #222;
+    border-radius: 50%;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.innocent .cat-mouth::before,
+.pixel-cat.innocent .cat-mouth::after {
+    display: none;
+}
+
+/* 害羞表情 - 眼睛向下看，脸红 */
+.pixel-cat.shy .cat-eye {
+    width: 4px;
+    height: 3px;
+    background-color: #222;
+    top: 12px;
+    animation: shy-look 3s infinite;
+}
+
+.pixel-cat.shy .cat-mouth {
+    width: 3px;
+    height: 2px;
+    background-color: transparent;
+    border-top: 1px solid #222;
+    border-radius: 2px 2px 0 0;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pixel-cat.shy .cat-mouth::before,
+.pixel-cat.shy .cat-mouth::after {
+    display: none;
+}
+
+/* 为害羞表情添加脸红效果 */
+.pixel-cat.shy .cat-face::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(255, 100, 100, 0.6);
+    border-radius: 50%;
+    top: 12px;
+    left: 2px;
+    z-index: 3;
+}
+
+.pixel-cat.shy .cat-face::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(255, 100, 100, 0.6);
+    border-radius: 50%;
+    top: 12px;
+    right: 2px;
+    z-index: 3;
+}
+
+/* 新增动画关键帧 */
+
+/* 眼睛闪烁动画 */
+@keyframes eye-sparkle {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* 眼睛转动动画 */
+@keyframes eye-roll {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-1px); }
+    50% { transform: translateY(-2px); }
+    75% { transform: translateY(-1px); }
+    100% { transform: translateY(0); }
+}
+
+/* 头部挠痒动画 */
+@keyframes head-scratch {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(2deg); }
+    50% { transform: rotate(-2deg); }
+    75% { transform: rotate(1deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* 眼睛颤抖动画 */
+@keyframes eye-shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-0.5px); }
+    50% { transform: translateX(0.5px); }
+    75% { transform: translateX(-0.5px); }
+    100% { transform: translateX(0); }
+}
+
+/* 身体颤抖动画 */
+@keyframes body-tremble {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    50% { transform: translateX(1px); }
+    75% { transform: translateX(-1px); }
+    100% { transform: translateX(0); }
+}
+
+
+
+/* 困倦眨眼动画 */
+@keyframes sleepy-blink {
+    0% { height: 4px; }
+    10% { height: 2px; }
+    20% { height: 4px; }
+    80% { height: 4px; }
+    90% { height: 1px; }
+    100% { height: 4px; }
+}
+
+/* 头部点头动画 */
+@keyframes head-nod {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(1px); }
+    100% { transform: translateY(0); }
+}
+
+/* 睡觉时尾巴动画 */
+@keyframes tail-sleeping {
+    0% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(170deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
+}
+
+/* 眨眼动画 */
+@keyframes cat-blink {
+    0%, 90%, 100% {
+        height: 4px;
+        opacity: 1;
+    }
+    92%, 98% {
+        height: 1px;
+        opacity: 0.8;
+        top: 12px;
+    }
+}
+
+/* 快速眨眼动画 */
+@keyframes quick-blink {
+    0%, 100% {
+        height: 4px;
+        top: 10px;
+    }
+    50% {
+        height: 1px;
+        top: 12px;
+    }
+}
+
+/* 模式看板样式 */
+.cat-mode-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-height: 80vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 3px solid #222;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    display: none;
+    overflow-y: auto;
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+.cat-mode-panel.visible {
+    display: block;
+    animation: panel-slide-in 0.3s ease-out;
+}
+
+.panel-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.panel-title {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.panel-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin: 5px 0 0 0;
+}
+
+.panel-content {
+    padding: 20px;
+}
+
+.mode-category {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.category-title {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mode-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.mode-option {
+    position: relative;
+}
+
+.mode-option input[type="radio"] {
+    display: none;
+}
+
+.mode-option label {
+    display: block;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.mode-option label:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.mode-option input[type="radio"]:checked + label {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+}
+
+/* 颜色选择样式 */
+.color-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.color-option {
+    position: relative;
+}
+
+.color-option input[type="radio"] {
+    display: none;
+}
+
+.color-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.color-label:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.color-name {
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.color-option input[type="radio"]:checked + .color-label {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.color-option input[type="radio"]:checked + .color-label .color-preview {
+    border-color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+/* 学习陪伴功能样式 */
+.learning-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.learning-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
+
+.learning-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.pomodoro-info {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    text-align: center;
+    margin-top: 4px;
+}
+
+
+
+.panel-footer {
+    padding: 15px 20px;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.panel-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-preview {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3);
+}
+
+.btn-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(238, 90, 36, 0.4);
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+}
+
+.panel-overlay.visible {
+    display: block;
+    animation: overlay-fade-in 0.3s ease-out;
+}
+
+@keyframes panel-slide-in {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes overlay-fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* ==================== 新增表情动画 ==================== */
+
+/* 眼睛闪烁动画 - 用于开心表情 */
+@keyframes eye-sparkle {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* 无辜眨眼动画 - 慢速眨眼 */
+@keyframes innocent-blink {
+    0%, 90% { height: 6px; }
+    95%, 100% { height: 2px; }
+}
+
+/* 害羞眼神动画 - 眼睛左右看 */
+@keyframes shy-look {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+}

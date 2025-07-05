@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可拖拽和缩放的对话式AI助手 (纯色版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Markdown & Syntax Highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 全局样式 --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            background-color: #f3f4f6; /* 浅灰色背景 */
+        }
+
+        /* --- 自定义滚动条 --- */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        
+        textarea { overflow-y: hidden; resize: none !important; }
+
+        /* --- UI元素样式 --- */
+        .feature-btn { color: #6b7280; padding: 0.5rem; border-radius: 9999px; transition: background-color 0.2s; }
+        .feature-btn:hover { background-color: #e5e7eb; }
+        
+        #custom-tooltip { transform: translate(-50%, -120%); transition: opacity 0.15s ease-in-out; }
+
+        /* --- 表格样式 --- */
+        .table-container { border: 1px solid #e5e7eb; border-radius: 0.75rem; overflow: hidden; background-color: white; }
+        .styled-table { width: 100%; border-collapse: collapse; }
+        .styled-table th, .styled-table td { padding: 12px 16px; text-align: left; font-size: 0.875rem; }
+        .styled-table thead { background-color: #eef2ff; }
+        .styled-table th { color: #6c5ffc; font-weight: 600; }
+        .styled-table tbody tr { border-top: 1px solid #e5e7eb; }
+        .styled-table tbody tr:hover { background-color: #f9fafb; }
+        
+        /* --- Markdown生成的表格的美化样式 --- */
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background-color: white;
+        }
+        .prose th, .prose td {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.875rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .prose thead {
+            background-color: #eef2ff;
+        }
+        .prose th {
+            color: #6c5ffc;
+            font-weight: 600;
+            border-top: none;
+        }
+        .prose tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        .prose tbody tr:first-child td {
+            border-top: none;
+        }
+
+        /* --- 头像选择 --- */
+        #avatar-selector-panel {
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+            transform-origin: bottom center;
+        }
+
+        .avatar-option.selected {
+            border: 3px solid #7869ff;
+            box-shadow: 0 0 10px rgba(120, 105, 255, 0.5);
+        }
+
+        /* --- 交互式问答 --- */
+        .quiz-option {
+            display: block;
+            margin-top: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #f9fafb;
+        }
+        .quiz-option input {
+            margin-right: 0.75rem;
+        }
+        .quiz-option.selected {
+            border-color: #7869ff;
+            background-color: #eef2ff;
+            box-shadow: 0 0 0 2px rgba(120, 105, 255, 0.3);
+        }
+        .quiz-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .quiz-textarea:focus {
+            outline: none;
+            border-color: #7869ff;
+            box-shadow: 0 0 0 2px rgba(120, 105, 255, 0.3);
+        }
+        .quiz-submit-btn {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.625rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            color: white;
+            background-color: #7869ff;
+            transition: background-color 0.2s;
+        }
+        .quiz-submit-btn:hover {
+            background-color: #6c5ffc;
+        }
+        .quiz-submit-btn:disabled {
+            background-color: #a5b4fc;
+            cursor: not-allowed;
+        }
+
+        /* --- 可折叠内容 --- */
+        .prose details {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        .prose summary {
+            cursor: pointer;
+            font-weight: 600;
+            display: list-item; /* Use list-item to have a default marker */
+        }
+        .prose summary:focus {
+            outline: none;
+            text-decoration: underline;
+            text-decoration-color: #a5b4fc;
+        }
+        .prose details > :not(summary) {
+            margin-top: 0.75rem;
+        }
+
+        /* --- 代码块和复制按钮 --- */
+        .prose pre {
+            position: relative;
+            background-color: #2d333b; /* Corresponds to github-dark theme */
+            color: #cdd9e5;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: rgba(76, 81, 88, 0.8);
+            color: #cdd9e5;
+            border: none;
+            padding: 0.35rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .prose pre:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            background-color: rgba(99, 104, 111, 0.9);
+        }
+
+        .quiz-type-btn {
+            @apply w-full text-left px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150;
+        }
+        .quiz-option-label {
+            @apply block w-full cursor-pointer rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-3 text-sm font-medium shadow-sm hover:border-gray-400 dark:hover:border-gray-500;
+        }
+        .quiz-option-input:checked + .quiz-option-label {
+            @apply border-indigo-500 ring-2 ring-indigo-500;
+        }
+    </style>
+</head>
+<body class="h-screen bg-gray-100">
+
+    <!-- 用于重新打开助手的按钮 -->
+    <button id="open-assistant-btn" class="hidden absolute top-5 right-5 bg-[#7869ff] text-white py-2 px-4 rounded-lg shadow-lg hover:bg-[#6c5ffc] transition-colors z-50">
+        打开助手
+    </button>
+
+    <!-- 自定义注释提示框 -->
+    <div id="custom-tooltip" class="hidden fixed px-3 py-1.5 text-sm text-white bg-gray-800 rounded-md shadow-sm z-[1000]" style="pointer-events: none;"></div>
+
+    <!-- 新对话确认弹窗 -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[100]">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
+            <h3 class="text-lg font-bold text-gray-800">确认开启新对话</h3>
+            <p class="mt-2 text-sm text-gray-600">该操作会清除当前对话记录，请确认您已保存重要信息。要继续吗？</p>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-new-chat" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">取消</button>
+                <button id="confirm-new-chat" class="px-4 py-2 bg-[#7869ff] text-white rounded-md hover:bg-[#6c5ffc]">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI助手窗口 -->
+    <div id="assistant-window" class="min-w-[360px] min-h-[400px] bg-white rounded-2xl shadow-2xl flex flex-col z-40 border-2 border-gray-200" style="position: absolute; opacity: 0; transition: opacity 0.3s;">
+        <div id="assistant-header" class="flex items-center justify-between p-4 border-b border-[#7869ff] cursor-move rounded-t-2xl bg-[#7869ff] flex-shrink-0">
+            <div class="flex items-center space-x-3">
+                <h1 class="text-2xl font-bold text-white">喵喵助手</h1>
+                <!-- 模型选择器占位符 -->
+                <div id="model-selector-container" class="relative"></div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="new-chat-btn" data-tooltip="新对话" class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-full focus:outline-none transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                </button>
+                <button id="close-btn" data-tooltip="关闭" class="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-full focus:outline-none transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+        <div id="chat-box" class="flex-1 p-6 overflow-y-auto custom-scrollbar"><div id="message-list" class="space-y-4"></div></div>
+        <div class="p-4 border-t border-gray-200 bg-white rounded-b-2xl flex-shrink-0">
+            <div id="feature-toolbar" class="pb-2 flex justify-start space-x-2 items-center">
+                <button class="feature-btn" data-tooltip="学习报告" data-feature="请给我一份我的学习报告"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></button>
+                <button class="feature-btn" data-tooltip="掌握程度" data-feature="分析一下我的知识点掌握程度"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg></button>
+                <button class="feature-btn" data-tooltip="错题本" data-feature="打开我的错题本"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></button>
+                
+                <div class="relative">
+                    <button id="quiz-menu-toggle" class="feature-btn" data-tooltip="出个题">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    </button>
+                    <div id="quiz-submenu" class="hidden absolute bottom-full mb-2 w-max bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 z-20">
+                        <div class="flex flex-col items-start space-y-1">
+                            <button class="quiz-type-btn" data-prompt-display="请出一道选择题" data-prompt-ai="请给我出一道关于批判性思维的交互式【选择题】，并以 ```json ... ``` 的代码块形式返回。JSON对象中 'questionType' 字段必须是 'multipleChoice'。请严格遵守以下要求：1. 'options'数组必须恰好包含3个对象，且每个对象都必须有'id'和'text'两个字段。2. 必须有'questionText'字段。3. 必须有'correctAnswerId'字段。">选择题</button>
+                            <button class="quiz-type-btn" data-prompt-display="请出一道判断题" data-prompt-ai="请给我出一道关于批判性思维的交互式【判断题】，并以 ```json ... ``` 的代码块形式返回。JSON对象中 'questionType' 字段必须是 'trueFalse'。请严格遵守以下要求：1. 'options'数组固定为`[{id:'true', text:'正确'}, {id:'false', text:'错误'}]`。2. 必须有'questionText'字段。3. 必须有'correctAnswerId'字段。">判断题</button>
+                            <button class="quiz-type-btn" data-prompt-display="请出一道简答题" data-prompt-ai="请给我出一道关于批判性思维的交互式【简答题】，并以 ```json ... ``` 的代码块形式返回。JSON对象中 'questionType' 字段必须是 'shortAnswer'。请严格遵守以下要求：1. 必须有'questionText'字段。2. 不要包含答案字段。">简答题</button>
+                            <button class="quiz-type-btn" data-prompt-display=一道随机题" data-prompt-ai="请给我出一道关于批判性思维的交互式题目，并以 ```json ... ``` 的代码块形式返回。JSON对象中 `questionType` 字段可以是 'multipleChoice', 'trueFalse', 或 'shortAnswer'。请严格遵守以下要求：1. 对于'multipleChoice'，`options`数组必须恰好包含3个对象，且每个对象都必须有`id`和`text`两个字段。2. 对于'trueFalse'，`options`数组固定为`[{id:'true', text:'正确'}, {id:'false', 'text':'错误'}]`。3. 所有题型都必须有`questionText`字段。4. 选择和判断题必须有`correctAnswerId`字段。">随机类型</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-end gap-2">
+                <div id="avatar-selector" class="relative flex-shrink-0">
+                    <img id="current-avatar" src="images/1.jpg" alt="Current Avatar" class="w-12 h-12 rounded-full cursor-pointer hover:opacity-90 transition-opacity">
+                    <div id="avatar-selector-panel" class="hidden absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-2 flex gap-2" style="transform: scale(0.9) translateY(10px); opacity: 0;">
+                        <!-- Avatar options will be populated by JS -->
+                    </div>
+                </div>
+                <textarea id="chat-input" placeholder="向喵喵助手提问..." class="w-full p-3 text-sm bg-gray-100 border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#a5b4fc] transition" rows="1"></textarea>
+                <button id="send-btn" class="bg-[#7869ff] text-white px-5 py-3 rounded-2xl text-sm font-semibold hover:bg-[#6c5ffc] transition-colors focus:outline-none flex-shrink-0 flex items-center justify-center gap-2">
+                    <span id="send-btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </span>
+                    <span id="send-btn-text">发送</span>
+                </button>
+            </div>
+        </div>
+        <div id="resize-handle-left" class="absolute top-0 left-0 h-full w-2 cursor-col-resize z-50"></div>
+        <div id="resize-handle-right" class="absolute top-0 right-0 h-full w-2 cursor-col-resize z-50"></div>
+        <div id="resize-handle-top" class="absolute top-0 left-0 w-full h-2 cursor-row-resize z-50"></div>
+        <div id="resize-handle-bottom" class="absolute bottom-0 left-0 w-full h-2 cursor-row-resize z-50"></div>
+    </div>
+
+    <script>
+        // --- 元素获取 ---
+        const assistantWindow = document.getElementById('assistant-window');
+        const assistantHeader = document.getElementById('assistant-header');
+        const chatBox = document.getElementById('chat-box');
+        const messageList = document.getElementById('message-list');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const featureToolbar = document.getElementById('feature-toolbar');
+        const closeBtn = document.getElementById('close-btn');
+        const openBtn = document.getElementById('open-assistant-btn');
+        const resizeHandles = {
+            left: document.getElementById('resize-handle-left'), right: document.getElementById('resize-handle-right'),
+            top: document.getElementById('resize-handle-top'), bottom: document.getElementById('resize-handle-bottom'),
+        };
+        const confirmModal = document.getElementById('confirm-modal');
+        const cancelNewChatBtn = document.getElementById('cancel-new-chat');
+        const confirmNewChatBtn = document.getElementById('confirm-new-chat');
+        const tooltip = document.getElementById('custom-tooltip');
+
+        // --- 全局状态 & 配置 ---
+        let config = {};
+        let currentModelKey = '';
+        let chatHistory = [];
+        let currentAction = '';
+        let initialMouseX, initialMouseY, initialRect;
+        let isGenerating = false;
+        let currentAbortController = null;
+        const avatars = ['images/1.jpg', 'images/2.jpg', 'images/3.jpg', 'images/4.jpg', 'images/5.jpg', 'images/6.jpg'];
+        let currentUserAvatar = avatars[0];
+        
+        // --- 欢迎消息 ---
+        const renderWelcomeMessage = () => {
+            const currentTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+            messageList.innerHTML = `<div class="message-group"><div class="flex items-start gap-3"><div class="w-10 h-10 rounded-full bg-[#7869ff] flex items-center justify-center text-white font-bold text-xl flex-shrink-0">喵</div><div class="flex-1"><div class="bg-gray-100 rounded-xl p-4 inline-block max-w-full" style="line-height: 1.75;"><p class="text-base text-gray-700 break-all">你好呀！我是喵喵助手，一个可以帮助你进行思维训练的AI助手。你有什么要问我的吗？下面是几个例子，你可以参考一下</p><div class="quick-replies mt-4 flex flex-row flex-wrap items-start gap-2"><button class="quick-reply-btn text-sm text-[#7869ff] bg-[#eef2ff] hover:bg-[#e0e7ff] transition-colors py-1 px-3 rounded-full">“机器人会做所有工作”，这句话一定对吗？</button><button class="quick-reply-btn text-sm text-[#7869ff] bg-[#eef2ff] hover:bg-[#e0e7ff] transition-colors py-1 px-3 rounded-full">同桌说这个文具好用，所以它适合所有人吗？</button><button class="quick-reply-btn text-sm text-[#7869ff] bg-[#eef2ff] hover:bg-[#e0e7ff] transition-colors py-1 px-3 rounded-full">小明成绩变好了，一定只是因为他变努力了吗？</button><button class="quick-reply-btn text-sm text-[#7869ff] bg-[#eef2ff] hover:bg-[#e0e7ff] transition-colors py-1 px-3 rounded-full">有人说“玩游戏能变聪明”，我该怎么判断？</button></div></div><div class="text-xs text-gray-400 mt-1 pl-1">${currentTime}</div></div></div></div>`;
+        };
+        
+        // --- 窗口拖动与拉伸核心逻辑 ---
+        const ensureAbsolutePosition = () => { if (assistantWindow.dataset.isPositioned) return; const rect = assistantWindow.getBoundingClientRect(); Object.assign(assistantWindow.style, { position: 'absolute', left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` }); assistantWindow.dataset.isPositioned = 'true'; assistantWindow.getBoundingClientRect(); };
+        const startAction = (e, actionType) => { if(e.target.closest('button')) return; e.preventDefault(); e.stopPropagation(); currentAction = actionType; ensureAbsolutePosition(); initialRect = assistantWindow.getBoundingClientRect(); initialMouseX = e.clientX; initialMouseY = e.clientY; assistantWindow.style.transition = 'none'; document.body.style.userSelect = 'none'; document.body.style.cursor = getComputedStyle(e.target).cursor || 'default'; };
+        assistantHeader.addEventListener('mousedown', (e) => startAction(e, 'drag'));
+        Object.values(resizeHandles).forEach(handle => { handle.addEventListener('mousedown', (e) => startAction(e, `resize-${handle.id.split('-')[2]}`)); });
+        const handleMouseMove = (e) => { if (!currentAction) return; e.preventDefault(); window.requestAnimationFrame(() => { if (currentAction === 'drag') { const dx = e.clientX - initialMouseX; const dy = e.clientY - initialMouseY; assistantWindow.style.left = `${initialRect.left + dx}px`; assistantWindow.style.top = `${initialRect.top + dy}px`; } else if (currentAction.startsWith('resize')) { const direction = currentAction.split('-')[1]; const minWidth = 360; const minHeight = 400; if (direction === 'right') { const newWidth = initialRect.width + (e.clientX - initialMouseX); if (newWidth > minWidth) assistantWindow.style.width = `${newWidth}px`; } else if (direction === 'left') { const newWidth = initialRect.width - (e.clientX - initialMouseX); if (newWidth > minWidth) { assistantWindow.style.width = `${newWidth}px`; assistantWindow.style.left = `${initialRect.left + (e.clientX - initialMouseX)}px`; } } else if (direction === 'bottom') { const newHeight = initialRect.height + (e.clientY - initialMouseY); if (newHeight > minHeight) assistantWindow.style.height = `${newHeight}px`; } else if (direction === 'top') { const newHeight = initialRect.height - (e.clientY - initialMouseY); if (newHeight > minHeight) { assistantWindow.style.height = `${newHeight}px`; assistantWindow.style.top = `${initialRect.top + (e.clientY - initialMouseY)}px`; } } } }); };
+        const stopAction = () => { if (!currentAction) return; currentAction = ''; document.body.style.userSelect = 'auto'; document.body.style.cursor = 'default'; assistantWindow.style.transition = ''; };
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', stopAction);
+        document.addEventListener('mouseleave', stopAction);
+
+        // --- 页面与窗口初始化 ---
+        const setInitialPosition = () => { const padding = 32; const defaultWidth = 480; const defaultHeightPercent = 0.85; const viewWidth = window.innerWidth; const viewHeight = window.innerHeight; const width = Math.min(defaultWidth, viewWidth - padding * 2); const height = viewHeight * defaultHeightPercent; const top = (viewHeight - height) / 2; const left = viewWidth - width - padding; Object.assign(assistantWindow.style, { width: `${width}px`, height: `${height}px`, left: `${left}px`, top: `${top}px`, opacity: '1' }); };
+        
+        // --- 模型选择器 UI 渲染 ---
+        const renderModelSelector = () => {
+            const container = document.getElementById('model-selector-container');
+            if (!config.models || Object.keys(config.models).length === 0) return;
+
+            const selectedModelName = config.models[currentModelKey]?.name || '选择模型';
+
+            container.innerHTML = `
+                <button id="model-selector-btn" class="flex items-center gap-1.5 text-sm font-medium text-white bg-white/20 px-3 py-1.5 rounded-full hover:bg-white/30 transition-colors">
+                    <span id="model-name-display">${selectedModelName}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="model-options-container" class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-1 ring-1 ring-black ring-opacity-5">
+                    <!-- Options will be populated by JS -->
+                </div>
+            `;
+
+            const btn = document.getElementById('model-selector-btn');
+            const optionsContainer = document.getElementById('model-options-container');
+            const nameDisplay = document.getElementById('model-name-display');
+
+            Object.entries(config.models).forEach(([key, model]) => {
+                const option = document.createElement('button');
+                option.className = 'block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100';
+                option.textContent = model.name;
+                option.dataset.modelKey = key;
+                option.addEventListener('click', () => {
+                    currentModelKey = key;
+                    nameDisplay.textContent = model.name;
+                    optionsContainer.classList.add('hidden');
+                    // 清空对话历史以适应新模型
+                    chatHistory = [];
+                    renderWelcomeMessage();
+                    appendBotMessage(`<p class="text-sm text-gray-700 break-all">已切换到 <b>${model.name}</b> 模型。有什么可以帮你的吗？</p>`);
+                });
+                optionsContainer.appendChild(option);
+            });
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                optionsContainer.classList.toggle('hidden');
+            });
+        };
+        
+        // --- 头像选择器初始化 ---
+        const initializeAvatarSelector = () => {
+            const currentAvatarImg = document.getElementById('current-avatar');
+            const avatarPanel = document.getElementById('avatar-selector-panel');
+
+            // 填充头像选项
+            avatars.forEach(avatarSrc => {
+                const img = document.createElement('img');
+                img.src = avatarSrc;
+                img.alt = `Avatar option`;
+                img.className = 'w-10 h-10 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 avatar-option';
+                if (avatarSrc === currentUserAvatar) {
+                    img.classList.add('selected');
+                }
+                
+                img.addEventListener('click', () => {
+                    currentUserAvatar = avatarSrc;
+                    currentAvatarImg.src = avatarSrc;
+
+                    // 更新选中状态
+                    avatarPanel.querySelectorAll('.avatar-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    img.classList.add('selected');
+
+                    // 隐藏面板
+                    avatarPanel.classList.add('hidden');
+                    avatarPanel.style.transform = 'scale(0.9) translateY(10px)';
+                    avatarPanel.style.opacity = '0';
+                });
+                avatarPanel.appendChild(img);
+            });
+
+            // 点击主头像切换面板
+            currentAvatarImg.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = avatarPanel.classList.toggle('hidden');
+                if (isHidden) {
+                    avatarPanel.style.transform = 'scale(0.9) translateY(10px)';
+                    avatarPanel.style.opacity = '0';
+                } else {
+                    avatarPanel.style.transform = 'scale(1) translateY(0)';
+                    avatarPanel.style.opacity = '1';
+                }
+            });
+        };
+
+        // --- 应用初始化 ---
+        const initializeApp = async () => {
+            try {
+                const response = await fetch('config.json');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                config = await response.json();
+                currentModelKey = config.defaultModel;
+                chatHistory = []; // 初始化对话历史
+                renderModelSelector();
+                initializeAvatarSelector(); // 初始化头像选择器
+            } catch (error) {
+                console.error("无法加载配置文件:", error);
+                messageList.innerHTML = `<div class="text-red-500 p-4">错误：无法加载配置文件 config.json。请检查文件是否存在且格式正确。</div>`;
+            }
+            setInitialPosition();
+            renderWelcomeMessage();
+        };
+        
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // 点击外部关闭模型选择器和头像选择器
+        document.addEventListener('click', (e) => {
+            const modelContainer = document.getElementById('model-selector-container');
+            const modelOptionsContainer = document.getElementById('model-options-container');
+            if (modelContainer && !modelContainer.contains(e.target)) {
+                modelOptionsContainer?.classList.add('hidden');
+            }
+
+            const avatarContainer = document.getElementById('avatar-selector');
+            const avatarPanel = document.getElementById('avatar-selector-panel');
+            if (avatarContainer && !avatarContainer.contains(e.target)) {
+                avatarPanel.classList.add('hidden');
+                avatarPanel.style.transform = 'scale(0.9) translateY(10px)';
+                avatarPanel.style.opacity = '0';
+            }
+        });
+
+        // --- Tooltip 逻辑 ---
+        const handleMouseOver = (e) => { const target = e.target.closest('[data-tooltip]'); if (!target) return; const tooltipText = target.dataset.tooltip; tooltip.textContent = tooltipText; tooltip.classList.remove('hidden'); const rect = target.getBoundingClientRect(); tooltip.style.left = `${rect.left + rect.width / 2}px`; tooltip.style.top = `${rect.top}px`; };
+        const handleMouseOut = (e) => { const target = e.target.closest('[data-tooltip]'); if (!target) return; tooltip.classList.add('hidden'); };
+        document.body.addEventListener('mouseover', handleMouseOver);
+        document.body.addEventListener('mouseout', handleMouseOut);
+
+        // --- 消息处理逻辑 ---
+        const handleSendMessage = async (promptForAI, promptForDisplay) => {
+            // 如果 promptForDisplay 未定义，则默认为 promptForAI
+            const messageToDisplay = promptForDisplay || promptForAI;
+            const messageForAI = promptForAI;
+            
+            if (messageForAI.trim() === '' || isGenerating) return;
+
+            // 1. 在UI上显示用户消息
+            const userTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message-group';
+            userMessageDiv.innerHTML = `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="flex-1">
+                        <div class="bg-[#7869ff] text-white rounded-xl p-3 inline-block float-right max-w-full" style="line-height: 1.75;"><p class="text-base break-all">${messageToDisplay}</p></div>
+                        <div class="text-xs text-gray-400 mt-1 text-right pr-1 clear-both">${userTime}</div>
+                    </div>
+                    <img src="${currentUserAvatar}" alt="User Avatar" class="w-10 h-10 rounded-full flex-shrink-0" />
+                </div>`;
+            messageList.appendChild(userMessageDiv);
+            chatHistory.push({ role: "user", content: messageForAI });
+            chatInput.value = ''; chatInput.style.height = 'auto'; 
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // 2. 显示"思考中"动画 (立即移除，因为我们会马上创建消息占位符)
+            const typingIndicatorDiv = document.createElement('div');
+            typingIndicatorDiv.id = 'typing-indicator';
+            typingIndicatorDiv.className = 'flex items-start gap-3';
+            typingIndicatorDiv.innerHTML = `<div class="w-10 h-10 rounded-full bg-[#7869ff] flex items-center justify-center text-white font-bold text-xl flex-shrink-0">喵</div><div class="bg-gray-100 rounded-xl p-4"><div class="flex items-center space-x-1"><span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: -0.3s;"></span><span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: -0.15s;"></span><span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span></div></div>`;
+            messageList.appendChild(typingIndicatorDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // 3. 调用API
+            if (!config.models || !config.models[currentModelKey]) {
+                appendBotMessage(`<p class="text-sm text-red-500 break-all">错误：模型配置丢失，无法发送请求。</p>`);
+                return;
+            }
+            
+            isGenerating = true;
+            currentAbortController = new AbortController();
+            setButtonToStopState();
+
+            const modelConfig = config.models[currentModelKey];
+            const messagesPayload = [
+                { role: "system", content: config.systemPrompt },
+                ...chatHistory
+            ];
+
+            let fullResponse = ""; // 用于累积完整的回复内容
+            let botMessageParagraph = null; // 用于引用机器人消息的 <p> 元素
+
+            try {
+                const response = await fetch(modelConfig.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${modelConfig.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelConfig.modelId,
+                        messages: messagesPayload,
+                        stream: true, 
+                        ...config.globalSettings
+                    }),
+                    signal: currentAbortController.signal // <--- 关联AbortSignal
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                    throw new Error(`API请求失败: ${errorData.message || response.status}`);
+                }
+                
+                // 获取读取器并处理流
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+
+                // 创建初始的空消息气泡
+                botMessageParagraph = appendBotMessage(""); 
+                if (document.getElementById('typing-indicator')) {
+                    document.getElementById('typing-indicator').remove();
+                }
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n').filter(line => line.trim() !== '');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const jsonStr = line.substring(6);
+                            if (jsonStr === '[DONE]') {
+                                break;
+                            }
+                            try {
+                                const parsed = JSON.parse(jsonStr);
+                                const content = parsed.choices[0]?.delta?.content || '';
+                                if (content) {
+                                    fullResponse += content;
+                                    // 在流式输出时实时解析Markdown
+                                    botMessageParagraph.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse));
+                                    chatBox.scrollTop = chatBox.scrollHeight;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing stream chunk:', e, 'Chunk:', jsonStr);
+                            }
+                        }
+                    }
+                }
+                
+                // 流结束后，检查是否为问答JSON
+                const quizJson = extractQuizJson(fullResponse);
+                if (quizJson) {
+                    renderQuiz(quizJson, botMessageParagraph);
+                } else {
+                    // 如果不是问答JSON，正常进行语法高亮
+                    const codeBlocks = botMessageParagraph.parentElement.querySelectorAll('pre code');
+                    codeBlocks.forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                    addCopyButtons(botMessageParagraph.parentElement);
+                }
+
+                chatHistory.push({ role: "assistant", content: fullResponse });
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Fetch aborted by user.');
+                    const abortedHtml = '<p class="text-sm text-gray-500 mt-2">[回答已中止]</p>';
+                    botMessageParagraph.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse + abortedHtml));
+                    chatHistory.push({ role: "assistant", content: fullResponse + '\n[回答已中止]' });
+                } else {
+                    console.error("API call failed:", error);
+                    if (document.getElementById('typing-indicator')) {
+                        document.getElementById('typing-indicator').remove();
+                    }
+                    appendBotMessage(`<p class="text-sm text-red-500 break-all">抱歉，请求出错了: ${error.message}</p>`);
+                }
+            } finally {
+                isGenerating = false;
+                currentAbortController = null;
+                setButtonToSendState();
+            }
+        };
+        
+        // --- 交互式问答相关函数 ---
+        const extractQuizJson = (text) => {
+            const match = text.match(/```json\s*([\s\S]*?)\s*```/);
+            if (match && match[1]) {
+                try {
+                    return JSON.parse(match[1]);
+                } catch (e) {
+                    console.error("Failed to parse quiz JSON:", e);
+                    return null;
+                }
+            }
+            return null;
+        };
+
+        const renderQuiz = (quizData, container) => {
+            container.innerHTML = ''; // 清空容器
+            
+            const questionP = document.createElement('p');
+            questionP.className = 'font-semibold mb-4';
+            questionP.textContent = quizData.questionText;
+            container.appendChild(questionP);
+
+            const form = document.createElement('form');
+            
+            if (quizData.questionType === 'multipleChoice' || quizData.questionType === 'trueFalse') {
+                quizData.options.forEach(option => {
+                    const label = document.createElement('label');
+                    label.className = 'quiz-option';
+                    
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'quiz-option';
+                    radio.value = option.id;
+                    
+                    label.appendChild(radio);
+                    label.append(option.text);
+                    form.appendChild(label);
+                });
+            } else if (quizData.questionType === 'shortAnswer') {
+                const textarea = document.createElement('textarea');
+                textarea.name = 'quiz-answer';
+                textarea.className = 'quiz-textarea';
+                textarea.placeholder = '请在此输入你的回答...';
+                form.appendChild(textarea);
+            }
+
+            const submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.className = 'quiz-submit-btn';
+            submitBtn.textContent = '提交答案';
+            form.appendChild(submitBtn);
+
+            // 增强交互：选中选项时添加高亮
+            form.addEventListener('change', (e) => {
+                if (e.target.type === 'radio') {
+                    form.querySelectorAll('.quiz-option').forEach(label => {
+                        label.classList.remove('selected');
+                    });
+                    const selectedLabel = e.target.closest('.quiz-option');
+                    if (selectedLabel) {
+                        selectedLabel.classList.add('selected');
+                    }
+                }
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                let userAnswerId = null, userAnswerText = null, promptForAI = null, promptForDisplay = null;
+
+                if (quizData.questionType === 'multipleChoice' || quizData.questionType === 'trueFalse') {
+                    userAnswerId = formData.get('quiz-option');
+                    if (!userAnswerId) return; // 未选择选项
+                    userAnswerText = quizData.options.find(o => o.id === userAnswerId).text;
+                    promptForAI = `对于问题："${quizData.questionText}"，我的回答是："${userAnswerText}"。请判断我的回答是否正确，并给出精简、直击本质的解析。`;
+                    promptForDisplay = `我选择：${userAnswerText}`;
+                } else if (quizData.questionType === 'shortAnswer') {
+                    userAnswerText = formData.get('quiz-answer').trim();
+                    if (!userAnswerText) return; // 未填写答案
+                    promptForAI = `请你扮演一位非常擅长和小学高年级学生（约10-12岁）对话的智慧老师。你的语言风格必须亲切、具体、易于理解，同时又能启发思考。
+
+                    现在，请针对学生的回答给一段反馈。
+                    
+                    原始问题是："${quizData.questionText}"
+                    学生的回答是："${userAnswerText}"
+                    
+                    你的反馈应该是一段温和而有力量的对话，请严格遵循以下步骤和要求：
+                    1.  **具体地表扬**：从学生的回答中找到一个具体的优点，用简单、真诚的话语表扬。例如"你注意到了一个很关键的地方"或"这个发现很有趣"或"你的回答基本正确"。请**避免使用"极具洞察力"、"非常棒"等过于夸张的词语**，除非学生的回答异常出色。
+                    2.  **提出一个可想象的问题**：接着，用一个贴近生活、孩子能够想象的场景来提出下一个问题，引导他思考得更深一点。例如："除了天气，我们还可以想想，城市里的哪些东西会因为下雨而变得不一样，从而影响交通呢？"
+                    3.  **使用平实、鼓励的语言**：全程使用"我们"或"你"作为主语，营造平等的对话氛围。结尾可以说"保持这份好奇心，我们下次再聊！"或"你的想法很好，下次可以试着从这个新角度看看"。
+                    4.  **禁止事项**：请完全避免使用任何抽象、华丽或哲学化的词汇（例如"哲学"、"思辨"、"旅程"等）。`;
+                    promptForDisplay = userAnswerText;
+                }
+                
+                if (promptForAI) {
+                    // 禁用表单并更新按钮状态
+                    form.querySelectorAll('input, button, textarea').forEach(el => el.disabled = true);
+                    submitBtn.textContent = '已作答';
+                    handleSendMessage(promptForAI, promptForDisplay);
+                }
+            });
+
+            container.appendChild(form);
+        };
+
+        function appendBotMessage(rawContent) { 
+            const typingIndicator = document.getElementById('typing-indicator');
+            if(typingIndicator){ typingIndicator.remove(); } 
+            const botTime = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const botResponseDiv = document.createElement('div');
+            botResponseDiv.className = 'message-group';
+
+            // 这个函数现在只负责创建消息气泡的骨架和渲染非流式内容
+            // 主要的渲染逻辑（包括问答）已移至handleSendMessage的流处理之后
+            const sanitizedHtml = DOMPurify.sanitize(marked.parse(rawContent));
+
+            botResponseDiv.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[#7869ff] flex items-center justify-center text-white font-bold text-xl flex-shrink-0">喵</div>
+                    <div class="flex-1">
+                        <div class="bg-gray-100 rounded-xl p-4 inline-block max-w-full" style="line-height: 1.75;">
+                            <div class="text-base text-gray-700 break-all prose max-w-none">${sanitizedHtml}</div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1 pl-1">${botTime}</div>
+                    </div>
+                </div>`;
+            messageList.appendChild(botResponseDiv);
+            
+            // 修正：移除这里的问答渲染逻辑，因为它不处理流式消息
+            const codeBlocks = botResponseDiv.querySelectorAll('pre code');
+            codeBlocks.forEach((block) => {
+                hljs.highlightElement(block);
+            });
+            addCopyButtons(botResponseDiv);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return botResponseDiv.querySelector('.prose'); 
+        }
+
+        // --- 按钮状态切换 ---
+        const setButtonToSendState = () => {
+            const btn = document.getElementById('send-btn');
+            const icon = document.getElementById('send-btn-icon');
+            const text = document.getElementById('send-btn-text');
+            btn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            btn.classList.add('bg-[#7869ff]', 'hover:bg-[#6c5ffc]');
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>`;
+            text.textContent = '发送';
+        };
+
+        const setButtonToStopState = () => {
+            const btn = document.getElementById('send-btn');
+            const icon = document.getElementById('send-btn-icon');
+            const text = document.getElementById('send-btn-text');
+            btn.classList.remove('bg-[#7869ff]', 'hover:bg-[#6c5ffc]');
+            btn.classList.add('bg-red-500', 'hover:bg-red-600');
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`; // Fallback stop icon, square is better
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 5a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" transform="rotate(90 10 10)" /><rect x="5" y="5" width="10" height="10" rx="1" /></svg>`;
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><rect x="5" y="5" width="10" height="10" rx="1" /></svg>`;
+            text.textContent = '停止';
+        };
+
+        // --- 复制按钮功能 ---
+        const addCopyButtons = (container) => {
+            const codeBlocks = container.querySelectorAll('pre');
+            codeBlocks.forEach(block => {
+                const button = document.createElement('button');
+                button.className = 'copy-btn flex items-center gap-1.5'; // Use flexbox for alignment
+                const originalContent = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span>复制</span>`;
+                button.innerHTML = originalContent;
+                
+                button.addEventListener('click', () => {
+                    const code = block.querySelector('code').innerText;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-green-400">已复制</span>`;
+                        setTimeout(() => {
+                            button.innerHTML = originalContent;
+                        }, 1500);
+                    });
+                });
+
+                block.appendChild(button);
+            });
+        }
+
+        sendBtn.addEventListener('click', () => {
+            if (isGenerating) {
+                currentAbortController?.abort();
+            } else {
+                const messageText = chatInput.value.trim();
+                if (messageText) {
+                    handleSendMessage(messageText);
+                }
+            }
+        });
+        chatInput.addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                const messageText = chatInput.value.trim();
+                if (messageText) {
+                    handleSendMessage(messageText);
+                }
+            } 
+        });
+        
+        // --- 其他按钮事件 ---
+        chatInput.addEventListener('input', () => { chatInput.style.height = 'auto'; chatInput.style.height = (chatInput.scrollHeight) + 'px'; });
+        closeBtn.addEventListener('click', () => { assistantWindow.style.opacity = '0'; assistantWindow.style.pointerEvents = 'none'; openBtn.classList.remove('hidden'); });
+        openBtn.addEventListener('click', () => { assistantWindow.style.opacity = '1'; assistantWindow.style.pointerEvents = 'auto'; openBtn.classList.add('hidden'); });
+        messageList.addEventListener('click', e => { 
+            const quickReplyBtn = e.target.closest('.quick-reply-btn');
+            if (quickReplyBtn) { 
+                handleSendMessage(quickReplyBtn.textContent); 
+            } 
+        });
+        featureToolbar.addEventListener('click', e => { 
+            const button = e.target.closest('.feature-btn'); 
+            if(button) { 
+                handleSendMessage(button.dataset.feature, button.dataset.tooltip); 
+            } 
+        });
+        newChatBtn.addEventListener('click', () => { confirmModal.classList.remove('hidden'); });
+        cancelNewChatBtn.addEventListener('click', () => { confirmModal.classList.add('hidden'); });
+        confirmNewChatBtn.addEventListener('click', () => { 
+            chatHistory = []; // 清空对话历史
+            renderWelcomeMessage(); 
+            chatBox.scrollTop = 0; 
+            confirmModal.classList.add('hidden'); 
+        });
+
+        // Quiz submenu logic
+        const quizMenuToggle = document.getElementById('quiz-menu-toggle');
+        const quizSubmenu = document.getElementById('quiz-submenu');
+
+        quizMenuToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            quizSubmenu.classList.toggle('hidden');
+        });
+
+        quizSubmenu.addEventListener('click', (event) => {
+            const button = event.target.closest('.quiz-type-btn');
+            if (button) {
+                const promptForAI = button.dataset.promptAi;
+                const promptForDisplay = button.dataset.promptDisplay;
+                if (promptForAI && promptForDisplay) {
+                    handleSendMessage(promptForAI, promptForDisplay);
+                    quizSubmenu.classList.add('hidden');
+                }
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!quizMenuToggle.contains(event.target) && !quizSubmenu.contains(event.target)) {
+                quizSubmenu.classList.add('hidden');
+            }
+        });
+
+        // Initialize tooltips
+        initializeTooltips();
+
+        function addMessage(text, sender, avatarSrc) {
+            const messageList = document.getElementById('message-list');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-group';
+
+            const userAvatar = document.createElement('div');
+            userAvatar.className = 'w-10 h-10 rounded-full flex-shrink-0';
+            userAvatar.innerHTML = `<img src="${avatarSrc}" alt="User Avatar" class="w-10 h-10 rounded-full">`;
+            messageDiv.appendChild(userAvatar);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'flex-1';
+            contentDiv.innerHTML = `<div class="bg-gray-100 rounded-xl p-3 inline-block float-right max-w-full" style="line-height: 1.75;"><p class="text-base break-all">${text}</p></div>`;
+            messageDiv.appendChild(contentDiv);
+
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'text-xs text-gray-400 mt-1 text-right pr-1 clear-both';
+            timeDiv.textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+            messageDiv.appendChild(timeDiv);
+
+            messageList.appendChild(messageDiv);
+            scrollToBottom();
+            return messageDiv.querySelector('.prose');
+        }
+
+        function handleSubmitQuiz(quizId) {
+            const quizDiv = document.getElementById(`quiz-${quizId}`);
+            if (!quizDiv) return;
+            const questionData = JSON.parse(quizDiv.dataset.question);
+            const { questionType, questionText, correctAnswerId } = questionData;
+
+            let userAnswerText = '';
+            let userAnswerId = null;
+            let promptForDisplay = '';
+            let promptForAI = '';
+
+            if (questionType === 'shortAnswer') {
+                const textarea = quizDiv.querySelector('textarea');
+                userAnswerText = textarea.value.trim();
+                if (!userAnswerText) {
+                    return;
+                }
+                disableQuiz(quizId, '已作答');
+                promptForDisplay = `我的回答：\n${userAnswerText}`;
+                promptForAI = `请你扮演一位非常擅长和小学高年级学生（约10-12岁）对话的智慧老师。你的语言风格必须亲切、具体、易于理解，同时又能启发思考。
+
+                现在，请针对学生的回答给一段反馈。
+                
+                原始问题是："${questionText}"
+                学生的回答是："${userAnswerText}"
+                
+                你的反馈应该是一段温和而有力量的对话，请严格遵循以下步骤和要求：
+                1.  **具体地表扬**：从学生的回答中找到一个具体的优点，用简单、真诚的话语表扬。例如"你注意到了一个很关键的地方"或"这个发现很有趣"或"你的回答基本正确"。请**避免使用"极具洞察力"、"非常棒"等过于夸张的词语**，除非学生的回答异常出色。
+                2.  **提出一个可想象的问题**：接着，用一个贴近生活、孩子能够想象的场景来提出下一个问题，引导他思考得更深一点。例如："除了天气，我们还可以想想，城市里的哪些东西会因为下雨而变得不一样，从而影响交通呢？"
+                3.  **使用平实、鼓励的语言**：全程使用"我们"或"你"作为主语，营造平等的对话氛围。结尾可以说"保持这份好奇心，我们下次再聊！"或"你的想法很好，下次可以试着从这个新角度看看"。
+                4.  **禁止事项**：请完全避免使用任何抽象、华丽或哲学化的词汇（例如"哲学"、"思辨"、"旅程"等）。`;
+                
+                handleSendMessage(promptForAI, promptForDisplay);
+
+            } else { // multipleChoice or trueFalse
+                const selectedOption = quizDiv.querySelector('input[type="radio"]:checked');
+                if (!selectedOption) {
+                    return;
+                }
+                
+                disableQuiz(quizId, '已作答');
+
+                const userAnswerId = selectedOption.value;
+                const isCorrect = (userAnswerId === correctAnswerId);
+                const userAnswerText = selectedOption.nextElementSibling.textContent;
+
+                // 1. 显示用户的选择
+                promptForDisplay = `我选择：${userAnswerText}`;
+                addMessage(promptForDisplay, 'user', currentUserAvatar);
+
+                // 2. 立即用富文本显示对错反馈
+                const correctAnswerOption = questionData.options.find(opt => opt.id === correctAnswerId);
+                const correctAnswerText = correctAnswerOption ? correctAnswerOption.text : '';
+                
+                let feedbackMarkdown = '';
+                if (isCorrect) {
+                    feedbackMarkdown = '✅ **回答正确**';
+                } else {
+                    feedbackMarkdown = `❌ **回答错误**\n\n正确答案是：**${correctAnswerText}**`;
+                }
+                const feedbackMessageContent = addMessage('', 'assistant', '喵');
+                feedbackMessageContent.innerHTML = DOMPurify.sanitize(marked.parse(feedbackMarkdown));
+
+                // 3. 准备prompt，向AI请求纯粹的解析
+                promptForAI = `对于问题："${questionText}"，学生选择了"${userAnswerText}"。这个答案是${isCorrect ? '正确' : '错误'}的。请只针对这个问题进行详细的解析，解释为什么这个选项是正确的（如果适用），以及为什么其他选项是错误的。你的解析将跟在对错判断的后面，所以请直接开始解释内容，不要再重复学生是否回答正确。`;
+                
+                // 4. 发送请求给AI，并且不在聊天窗中显示promptForAI
+                handleSendMessage(promptForAI, null);
+            }
+        }
+
+        function disableQuiz(quizId, message) {
+            const quizDiv = document.getElementById(quizId);
+            if (!quizDiv) return;
+            quizDiv.innerHTML = message;
+            quizDiv.classList.add('disabled');
+            quizDiv.removeEventListener('submit', handleSubmitQuiz);
+        }
+
+    </script>
+</body>
+</html>

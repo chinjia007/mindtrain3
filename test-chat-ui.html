@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嵌入式助手UI测试</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #4f46e5;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .test-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+        
+        .section-content {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .test-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✨";
+            margin-right: 8px;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1 class="test-title">💻 现代终端风格消息流</h1>
+            <p class="test-subtitle">体验简洁优雅的终端风格对话界面</p>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">🎯 主要优化内容</h2>
+            <div class="section-content">
+                <ul class="feature-list">
+                    <li>黑客终端风格设计，科技感十足</li>
+                    <li>用户消息：代码块风格，带 <span class="highlight">> 前缀</span></li>
+                    <li>助手消息：终端输出风格，带 <span class="highlight">$ 前缀</span></li>
+                    <li>时间戳独立显示，带科技感分隔线</li>
+                    <li>霓虹绿配色，高对比度显示</li>
+                    <li>等宽字体，增强代码感</li>
+                    <li>扫描线动画和光标闪烁效果</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">🚀 测试说明</h2>
+            <div class="section-content">
+                <p>点击右下角的悬浮球打开对话助手，测试以下功能：</p>
+                <ul class="feature-list">
+                    <li>悬浮球的高饱和度渐变和脉冲动画</li>
+                    <li>面板的现代化圆角和多层阴影</li>
+                    <li>用户消息的简洁气泡设计</li>
+                    <li>助手消息的卡片式布局和渐变指示条</li>
+                    <li>时间戳的悬浮显示效果</li>
+                    <li>统一的视觉语言和空间利用</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="section-title">💬 快速测试</h2>
+            <div class="section-content">
+                <p>使用以下按钮快速测试对话功能：</p>
+                <button class="test-button" onclick="testChat('你好！')">
+                    <span>👋</span>
+                    <span>发送问候</span>
+                </button>
+                <button class="test-button" onclick="testChat('这是一条很长的测试消息，用来测试助手消息的全宽显示效果和文本换行处理。')">
+                    <span>📝</span>
+                    <span>测试长消息</span>
+                </button>
+                <button class="test-button" onclick="window.ChatAssistant?.toggle()">
+                    <span>🎨</span>
+                    <span>打开/关闭助手</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载嵌入式助手 -->
+    <script src="assets/js/chat-assistant.js" defer></script>
+    
+    <script>
+        function testChat(message) {
+            // 确保助手已打开
+            if (window.ChatAssistant) {
+                // 如果助手未打开，先打开它
+                const panel = document.querySelector('.ca-panel');
+                if (!panel || !panel.classList.contains('open')) {
+                    window.ChatAssistant.toggle();
+                }
+                
+                // 延迟发送消息，确保面板已打开
+                setTimeout(() => {
+                    const textarea = document.querySelector('.ca-inputbar textarea');
+                    const sendBtn = document.querySelector('.ca-send');
+                    
+                    if (textarea && sendBtn) {
+                        textarea.value = message;
+                        textarea.dispatchEvent(new Event('input'));
+                        sendBtn.click();
+                    }
+                }, 300);
+            }
+        }
+        
+        // 页面加载完成后的提示
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('🎨 嵌入式助手UI优化测试页面已加载');
+                console.log('📱 点击右下角悬浮球开始测试');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

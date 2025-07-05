@@ -1,0 +1,114 @@
+/* 英雄徽章液体玻璃效果 - 仅针对小徽章区域 */
+
+/* 英雄徽章液体玻璃效果 - 高透明度高级效果 */
+.hero-badge {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    backdrop-filter: blur(8px) saturate(120%) brightness(105%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%) brightness(105%);
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 2rem;
+    box-shadow:
+        0 6px 20px rgba(102, 126, 234, 0.08),
+        0 2px 8px rgba(102, 126, 234, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.01);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+}
+
+.hero-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(102, 126, 234, 0.05) 30%,
+        rgba(255, 255, 255, 0.08) 70%,
+        rgba(255, 255, 255, 0.15) 100%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.hero-badge::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 127, 80, 0.15) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 127, 80, 0.15) 75%,
+        rgba(255, 255, 255, 0.25) 100%
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask-composite: xor;
+    z-index: 0;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.hero-badge .badge-text {
+    position: relative;
+    z-index: 2;
+    color: #ff7f50 !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.hero-badge:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 20px 60px rgba(102, 126, 234, 0.2),
+        0 8px 24px rgba(102, 126, 234, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.hero-badge:hover::before {
+    opacity: 1;
+}
+
+.hero-badge:hover::after {
+    opacity: 0.8;
+}
+
+/* 光泽动画效果 */
+@keyframes heroGlassShine {
+    0% {
+        transform: translateX(-100%) skewX(-15deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(200%) skewX(-15deg);
+        opacity: 0;
+    }
+}
+
+/* 悬停时的光泽扫过效果 */
+.hero-badge:hover::before {
+    animation: heroGlassShine 2s ease-out;
+}
+
+/* 浏览器兼容性回退 */
+@supports not (backdrop-filter: blur()) {
+    .hero-badge {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+}

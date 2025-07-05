@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Logo 字体测试</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .font-sample {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .font-name {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .ai-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.2),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            font-size: 28px;
+            color: white;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .dameng { font-family: 'DaMengKaTongTi', cursive; }
+        .yezi { font-family: 'YeZiGongChangGuaiJiaoHei', cursive; }
+        .zihun { font-family: 'ZiHunDaHei-Heavy', cursive; }
+        .jiaotang { font-family: 'AaBanShuZhiShi-JiaoTangXiaoMao', cursive; }
+        .keai { font-family: 'AaNianDuZuiKeAiJiang', cursive; }
+        .shangshou { font-family: 'ShangShouZongYiTi', cursive; }
+        .mengcho { font-family: 'MengChoTiNaDiTi', cursive; }
+
+        .description {
+            color: white;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .current-indicator {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .current-label {
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .apply-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        .apply-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AI Logo 字体效果测试</h1>
+        
+        <div class="font-grid">
+            <div class="font-sample current-indicator">
+                <div class="current-label">✨ 当前使用</div>
+                <div class="font-name">大萌卡通体 (DaMengKaTongTi)</div>
+                <div class="ai-logo dameng">AI</div>
+                <div class="description">
+                    当前悬浮球使用的字体，圆润可爱，适合儿童应用
+                </div>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">叶子工厂怪角黑 (YeZiGongChangGuaiJiaoHei)</div>
+                <div class="ai-logo yezi">AI</div>
+                <div class="description">
+                    独特的怪角设计，个性十足，很有设计感
+                </div>
+                <button class="apply-btn" onclick="applyFont('YeZiGongChangGuaiJiaoHei')">应用此字体</button>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">字魂大黑-Heavy (ZiHunDaHei-Heavy)</div>
+                <div class="ai-logo zihun">AI</div>
+                <div class="description">
+                    厚重有力，现代感强，适合科技风格
+                </div>
+                <button class="apply-btn" onclick="applyFont('ZiHunDaHei-Heavy')">应用此字体</button>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">教堂小猫 (AaBanShuZhiShi-JiaoTangXiaoMao)</div>
+                <div class="ai-logo jiaotang">AI</div>
+                <div class="description">
+                    优雅飘逸，有艺术气息，字形流畅
+                </div>
+                <button class="apply-btn" onclick="applyFont('AaBanShuZhiShi-JiaoTangXiaoMao')">应用此字体</button>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">年度最可爱奖 (AaNianDuZuiKeAiJiang)</div>
+                <div class="ai-logo keai">AI</div>
+                <div class="description">
+                    活泼可爱，充满童趣，很有亲和力
+                </div>
+                <button class="apply-btn" onclick="applyFont('AaNianDuZuiKeAiJiang')">应用此字体</button>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">上首综艺体 (ShangShouZongYiTi)</div>
+                <div class="ai-logo shangshou">AI</div>
+                <div class="description">
+                    综艺风格，轻松活泼，有娱乐感
+                </div>
+                <button class="apply-btn" onclick="applyFont('ShangShouZongYiTi')">应用此字体</button>
+            </div>
+
+            <div class="font-sample">
+                <div class="font-name">梦潮体那滴体 (MengChoTiNaDiTi)</div>
+                <div class="ai-logo mengcho">AI</div>
+                <div class="description">
+                    新增字体，独特风格，让我们看看飘逸效果如何
+                </div>
+                <button class="apply-btn" onclick="applyFont('MengChoTiNaDiTi')">应用此字体</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="color: white; opacity: 0.8;">
+                点击"应用此字体"按钮可以直接更新悬浮球的字体效果
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function applyFont(fontFamily) {
+            // 更新悬浮球字体
+            if (window.ChatAssistant && window.ChatAssistant.updateBallFont) {
+                window.ChatAssistant.updateBallFont(fontFamily);
+                alert(`已应用 ${fontFamily} 字体到悬浮球！`);
+            } else {
+                // 如果没有悬浮球，提示用户
+                alert(`字体选择：${fontFamily}\n请返回主页面查看效果！`);
+            }
+        }
+
+        // 页面加载完成后的提示
+        window.addEventListener('load', function() {
+            console.log('AI Logo 字体测试页面已加载');
+        });
+    </script>
+</body>
+</html>

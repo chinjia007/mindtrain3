@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神奇喵喵 | 思维训练场</title>
+    <!-- 引入主页样式 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="assets/fonts/YeZiGongChangGuaiJiaoHei-2.ttf" as="font" type="font/ttf" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&family=Rubik:wght@300;400;500;600;700;800;900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Fredoka+One&family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* 自定义字体和核心布局 */
+        body, html {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            height: 100%;
+            overflow: hidden;
+        }
+        .main-container {
+            min-height: calc(100vh - 100px); /* 保证内容至少铺满视口 */
+            display: flex;
+            align-items: flex-start;   /* 顶部开始 */
+            justify-content: center;   /* 水平居中 */
+            padding: 140px 0 40px;      /* 距离页眉固定 60px，下方留 40px */
+            box-sizing: border-box;
+            overflow-y: auto;          /* 当内容过高时允许滚动 */
+            scroll-padding-top: 210px; /* 锚点滚动考虑页眉+间距 */
+            transition: justify-content 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .quiz-column {
+            height: 95%;
+            max-height: 800px;
+            flex-shrink: 0;
+            /* 优化动画：只对需要的属性进行动画，并调整时间和曲线 */
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1), 
+                        opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s,
+                        padding 0.8s cubic-bezier(0.65, 0, 0.35, 1), 
+                        margin 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            /* 轻量主题美化 */
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.94) 100%);
+            border: 2px solid rgba(255, 127, 80, 0.05);
+            box-shadow: 0 4px 12px rgba(255, 127, 80, 0.05), 0 2px 6px rgba(0,0,0,0.03);
+        }
+        /* 答题状态 */
+        .state-answering {
+            justify-content: center;
+        }
+        .state-answering #col-1 {
+            width: 40%; /* 单列模式下占用容器的 80% */
+        }
+        .state-answering #col-2,
+        .state-answering #col-3 {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        /* 复盘状态 */
+        .state-reviewing {
+            justify-content: center;
+        }
+        .state-reviewing #col-1,
+        .state-reviewing #col-2,
+        .state-reviewing #col-3 {
+            width: 26%; /* 三栏合计约 78% + 间距 ≈ 80% */
+            opacity: 1;
+        }
+
+        /* 加载动画 */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 训练场页眉特定样式 */
+        .quiz-header-info {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-header-info:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 导航按钮容器 */
+        .quiz-nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-right: 20px;
+        }
+
+        /* 统一的导航按钮样式 */
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        /* 返回上页按钮 */
+        .back-button {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, #5b5ff1 0%, #8855f6 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* 返回主页按钮 */
+        .home-button {
+            background: linear-gradient(135deg, #f0932b 0%, #f6b93b 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .home-button:hover {
+            background: linear-gradient(135deg, #eb8c1f 0%, #f4b332 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 147, 43, 0.3);
+        }
+
+        /* 按钮图标 */
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .quiz-nav-buttons {
+                gap: 8px;
+                margin-right: 12px;
+            }
+            
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .nav-button span {
+                display: none;
+            }
+            
+            .nav-icon {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-slate-700">
+
+    <!-- 分离式品牌标题页眉 -->
+    <header class="split-brand-header">
+        <div class="brand-left">
+            <h1 class="artistic-brand-title">神奇喵喵</h1>
+            <p class="artistic-brand-subtitle-below">思维训练场</p>
+        </div>
+        <div class="brand-right">
+            <div class="quiz-nav-buttons">
+                <button onclick="history.back()" class="nav-button back-button">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M19 12H5m7-7l-7 7 7 7"/>
+                    </svg>
+                    <span>返回上页</span>
+                </button>
+                <a href="index.html" class="nav-button home-button">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span>返回主页</span>
+                </a>
+            </div>
+            <div id="question-title-display-header" class="quiz-header-info ml-4 hidden"></div>
+        </div>
+    </header>
+
+    <!-- 主体内容容器 -->
+    <div id="main-content-container" class="main-container relative">
+        <!-- 加载提示 -->
+        <div id="loading-indicator" class="h-full w-full flex flex-col justify-center items-center">
+            <div class="loader"></div>
+            <p class="mt-4 text-slate-500 font-semibold">正在加载题目...</p>
+        </div>
+
+        <!-- 答题/复盘容器 (初始隐藏) -->
+        <div id="quiz-container" class="w-full h-full flex gap-6 items-stretch state-answering">
+            <!-- 第一栏: 题目 -->
+            <section id="col-1" class="quiz-column bg-white rounded-2xl shadow-lg p-6 flex flex-col relative">
+                <div id="module-tag-quiz" class="absolute top-6 right-6 bg-sky-100 text-sky-800 text-xs font-semibold px-3 py-1 rounded-full"></div>
+                <div id="scenario-header" class="flex items-center mb-4 flex-shrink-0">
+                    <div class="bg-blue-100 p-2 rounded-full"><svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg></div>
+                    <h2 class="text-xl font-bold ml-3 text-slate-800">情景再现</h2>
+                    <div id="question-title-display" class="quiz-header-info ml-4"></div>
+                </div>
+                <div id="scenario-container" class="bg-slate-50 p-6 rounded-lg h-full flex items-center justify-center mb-4">
+                    <p id="scenario-text" class="text-lg leading-relaxed italic text-slate-600"></p>
+                </div>
+                 <h3 id="question-text" class="font-semibold text-lg mb-4 text-slate-700"></h3>
+                <div id="options-container" class="grid grid-cols-2 gap-4 mb-auto"></div>
+                <div id="graded-options-container" class="grid grid-cols-2 gap-2 hidden"></div>
+                <button id="main-action-btn" type="button" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300 mt-6 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40">提交答案</button>
+            </section>
+
+            <!-- 第二栏: 解析 -->
+            <section id="col-2" class="quiz-column bg-white rounded-2xl shadow-lg p-6 flex-col">
+                <h2 class="text-xl font-bold mb-4 text-slate-800">答案与解析</h2>
+                <div id="analysis-container" class="space-y-3 overflow-y-auto pr-2"></div>
+            </section>
+
+            <!-- 第三栏: 学习与应对 -->
+            <section id="col-3" class="quiz-column bg-white rounded-2xl shadow-lg p-6 flex-col">
+                 <h2 class="text-xl font-bold mb-4 text-slate-800">学习与应对</h2>
+                <div class="space-y-4 overflow-y-auto pr-2">
+                    <div>
+                        <h3 class="font-semibold text-base mb-2 text-slate-700">【学习要点】</h3>
+                        <ul id="learning-points-container" class="space-y-2 list-inside text-slate-600 text-sm"></ul>
+                    </div>
+                    <div class="border-t border-slate-200 pt-4">
+                        <h3 class="font-semibold text-base mb-2 text-slate-700">【应对参考】</h3>
+                        <div id="strategy-container" class="space-y-3"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 数据中心 ---
+        let allQuizData = []; 
+        let currentQuizSet = []; 
+
+        // --- 页面元素 ---
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const quizContainer = document.getElementById('quiz-container');
+        
+        const scenarioHeader = document.getElementById('scenario-header');
+        const scenarioContainer = document.getElementById('scenario-container');
+        const scenarioText = document.getElementById('scenario-text');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionTitleDisplay = document.getElementById('question-title-display');
+        const moduleTagQuiz = document.getElementById('module-tag-quiz');
+        const mainActionBtn = document.getElementById('main-action-btn');
+
+        const gradedOptionsContainer = document.getElementById('graded-options-container');
+        const analysisContainer = document.getElementById('analysis-container');
+        const learningPointsContainer = document.getElementById('learning-points-container');
+        const strategyContainer = document.getElementById('strategy-container');
+        
+        // --- 状态管理 ---
+        let currentQuestionIndex = 0;
+        let quizState = 'answering'; // 'answering' or 'reviewing'
+
+        // --- 函数 ---
+        
+        async function fetchAllQuizData() {
+            const moduleConfig = {
+                'critical':    { name: '批判性思维', fileIndex: 1 },
+                'logical':     { name: '逻辑思维', fileIndex: 2 },
+                'system':      { name: '系统思维', fileIndex: 3 },
+                'design':      { name: '设计思维', fileIndex: 4 },
+                'trap':        { name: '一叶知秋', fileIndex: 5 },
+                'personality': { name: '识人辨言', fileIndex: 6 }
+            };
+            const filePromises = [];
+
+            for (const [key, config] of Object.entries(moduleConfig)) {
+                const basePath = 'json-data/quizzes';
+                const fileName = `${basePath}/quiz-${config.fileIndex}.json`;
+                const moduleName = config.name;
+                filePromises.push(
+                    fetch(fileName)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to load ${fileName}: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const questions = data.questions || [];
+                            return questions.map(q => ({ ...q, module: moduleName, module_key: key }));
+                        })
+                );
+            }
+
+            try {
+                const allDataArrays = await Promise.all(filePromises);
+                allQuizData = allDataArrays.flat();
+            } catch (error) {
+                console.error("Failed to load quiz data:", error);
+                loadingIndicator.innerHTML = '<p class="text-rose-500 font-semibold">题目加载失败，请检查JSON文件或网络连接。</p>';
+            }
+        }
+
+        function prepareQuizSet() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const moduleParam = urlParams.get('module');
+
+            if (moduleParam === 'random') {
+                let array = [...allQuizData];
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                currentQuizSet = array;
+            } else if (moduleParam) {
+                currentQuizSet = allQuizData.filter(q => q.module_key === moduleParam);
+            } else {
+                currentQuizSet = [...allQuizData];
+            }
+
+            if (currentQuizSet.length === 0) {
+                 if (moduleParam && !allQuizData.some(q => q.module_key === moduleParam)) {
+                    loadingIndicator.innerHTML = '<p class="text-amber-600 font-semibold">模块参数错误，请检查URL。</p>';
+                 } else {
+                    loadingIndicator.innerHTML = '<p class="text-amber-600 font-semibold">当前模块没有题目。</p>';
+                    if (moduleParam === 'trap' || moduleParam === 'personality') {
+                        loadingIndicator.innerHTML = '<p class="text-amber-600 font-semibold">该模块内容制作中，你可以先做一下前面4个模块的训练题哦～</p>';
+                    }
+                 }
+                 return false;
+            }
+            return true;
+        }
+
+        function loadQuestion(index) {
+            quizContainer.classList.remove('state-reviewing');
+            quizContainer.classList.add('state-answering');
+            quizState = 'answering';
+            mainActionBtn.textContent = '提交答案';
+            mainActionBtn.disabled = false;
+            mainActionBtn.classList.remove('opacity-50');
+
+            [optionsContainer, gradedOptionsContainer, analysisContainer, learningPointsContainer, strategyContainer].forEach(el => el.innerHTML = '');
+            optionsContainer.classList.remove('hidden');
+            gradedOptionsContainer.classList.add('hidden');
+
+            scenarioHeader.querySelector('h2').classList.remove('text-lg');
+            scenarioHeader.querySelector('h2').classList.add('text-xl');
+            scenarioContainer.classList.remove('h-auto', 'p-3', 'mb-2');
+            scenarioContainer.classList.add('h-full', 'p-6', 'mb-4');
+            scenarioText.classList.remove('text-xs');
+            scenarioText.classList.add('text-lg');
+            questionText.classList.remove('text-base');
+            questionText.classList.add('text-lg');
+
+            const data = currentQuizSet[index];
+            
+            scenarioText.innerText = data.scenario;
+            questionText.innerText = data.question_text.replace(/（.*?）|\(.*?\)/g, '').trim();
+            questionTitleDisplay.innerText = data.title;
+            moduleTagQuiz.innerText = data.module || '';
+            moduleTagQuiz.style.display = data.module ? 'block' : 'none';
+
+            data.options.forEach(option => {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.name = 'options';
+                input.value = option.key;
+                input.classList.add('sr-only', 'peer');
+                const div = document.createElement('div');
+                div.textContent = `${option.key}. ${option.value}`;
+                div.classList.add('block', 'w-full', 'p-3', 'text-center', 'border-2', 'border-slate-200', 'rounded-lg', 'cursor-pointer', 'transition-colors', 'duration-200', 'text-base', 'peer-checked:bg-sky-100', 'peer-checked:border-sky-400', 'peer-checked:text-sky-800', 'peer-checked:font-semibold');
+                label.appendChild(input);
+                label.appendChild(div);
+                optionsContainer.appendChild(label);
+            });
+        }
+
+        function showResults() {
+            const data = currentQuizSet[currentQuestionIndex];
+            
+            scenarioHeader.querySelector('h2').classList.add('text-lg');
+            scenarioHeader.querySelector('h2').classList.remove('text-xl');
+            scenarioContainer.classList.add('h-auto', 'p-3', 'mb-2');
+            scenarioContainer.classList.remove('h-full', 'p-6', 'mb-4');
+            scenarioText.classList.add('text-xs');
+            scenarioText.classList.remove('text-lg');
+            questionText.classList.add('text-base');
+            questionText.classList.remove('text-lg');
+
+            optionsContainer.classList.add('hidden');
+            gradedOptionsContainer.classList.remove('hidden');
+
+            const selectedValues = Array.from(optionsContainer.querySelectorAll('input:checked')).map(el => el.value);
+            
+            data.options.forEach(option => {
+                const isCorrect = data.correct_answer.includes(option.key);
+                const isSelected = selectedValues.includes(option.key);
+                const containerDiv = document.createElement('div');
+                containerDiv.className = 'relative';
+                const label = document.createElement('div');
+                label.textContent = `${option.key}. ${option.value}`;
+                label.classList.add('block', 'w-full', 'p-2', 'text-center', 'rounded-lg', 'text-sm');
+                if (isSelected) {
+                    label.classList.add('border-2');
+                    if (isCorrect) {
+                        label.classList.add('bg-teal-100', 'border-teal-500', 'text-teal-800');
+                    } else {
+                        label.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-800');
+                    }
+                } else {
+                     if (isCorrect) {
+                        label.classList.add('border', 'border-dashed', 'border-teal-500', 'text-teal-700', 'bg-transparent');
+                        const stamp = document.createElement('div');
+                        stamp.textContent = '漏';
+                        stamp.className = 'absolute top-1.5 right-1.5 w-5 h-5 bg-teal-100 text-teal-500 text-xs font-bold flex items-center justify-center rounded-full transform -rotate-12 opacity-75';
+                        containerDiv.appendChild(stamp);
+                    } else {
+                        label.classList.add('border', 'border-slate-200', 'opacity-60');
+                    }
+                }
+                containerDiv.appendChild(label);
+                gradedOptionsContainer.appendChild(containerDiv);
+            });
+
+            data.analysis.forEach(item => {
+                const bgColor = item.status === 'correct' ? 'bg-teal-50' : 'bg-rose-50';
+                const textColor = item.status === 'correct' ? 'text-teal-700' : 'text-rose-700';
+                const titleColor = item.status === 'correct' ? 'text-teal-800' : 'text-rose-800';
+                const div = document.createElement('div');
+                div.className = `p-2 ${bgColor} rounded-lg`;
+                const parsedText = item.text.replace(/\*\*(.*?)\*\*：/g, `<p class="font-bold ${titleColor} text-sm">$1</p><p class="${textColor} text-sm">`);
+                div.innerHTML = `<div>${parsedText.endsWith('</p>') ? parsedText : parsedText + '</p>'}</div>`;
+                analysisContainer.appendChild(div);
+            });
+
+            data.learning_points.forEach(point => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start';
+                li.innerHTML = `<span class="text-blue-500 mr-2 mt-1">◆</span><span>${point}</span>`;
+                learningPointsContainer.appendChild(li);
+            });
+            
+            const strategies = data.response_reference;
+            if(strategies.preferred_strategy) {
+                const div = document.createElement('div');
+                div.className = 'border-l-4 border-amber-400 pl-3';
+                div.innerHTML = `<h4 class="font-bold text-amber-700 text-sm">🥇 ${strategies.preferred_strategy.title}</h4><div class="mt-1 space-y-1 text-sm text-slate-600">${strategies.preferred_strategy.points.join('<br>')}</div>`;
+                strategyContainer.appendChild(div);
+            }
+            if(strategies.alternative_strategy) {
+                 const div = document.createElement('div');
+                div.className = 'border-l-4 border-sky-400 pl-3';
+                let pointsHTML = strategies.alternative_strategy.immediate.join('<br>');
+                if (strategies.alternative_strategy.delayed && strategies.alternative_strategy.delayed.length > 0) {
+                    pointsHTML += '<br>' + strategies.alternative_strategy.delayed.join('<br>');
+                }
+                div.innerHTML = `<h4 class="font-bold text-sky-700 text-sm">🔄 ${strategies.alternative_strategy.title}</h4><div class="mt-1 space-y-1 text-sm text-slate-600">${pointsHTML}</div>`;
+                strategyContainer.appendChild(div);
+            }
+             if(strategies.other_strategies && strategies.other_strategies.length > 0) {
+                const div = document.createElement('div');
+                div.className = 'border-l-4 border-slate-400 pl-3';
+                div.innerHTML = `<h4 class="font-bold text-slate-700 text-sm">🎯 其他策略</h4><div class="mt-1 space-y-1 text-sm text-slate-600">${strategies.other_strategies.join('<br>')}</div>`;
+                strategyContainer.appendChild(div);
+            }
+
+            quizContainer.classList.remove('state-answering');
+            quizContainer.classList.add('state-reviewing');
+            quizState = 'reviewing';
+            mainActionBtn.textContent = '下一题';
+        }
+
+        async function initializeApp() {
+            await fetchAllQuizData();
+            if (allQuizData.length > 0) {
+                if (prepareQuizSet()) {
+                    loadingIndicator.style.display = 'none';
+                    quizContainer.style.opacity = 1; 
+                    loadQuestion(currentQuestionIndex);
+                }
+            } else {
+                 loadingIndicator.innerHTML = '<p class="text-rose-500 font-semibold">题库为空，请检查JSON文件。</p>';
+            }
+        }
+
+        mainActionBtn.addEventListener('click', () => {
+            if (quizState === 'answering') {
+                showResults();
+                 if (currentQuestionIndex >= currentQuizSet.length - 1) {
+                    mainActionBtn.textContent = '完成';
+                    mainActionBtn.disabled = true;
+                    mainActionBtn.classList.add('opacity-50');
+                }
+            } else { 
+                if (currentQuestionIndex < currentQuizSet.length - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion(currentQuestionIndex);
+                }
+            }
+        });
+
+        initializeApp();
+    });
+    </script>
+
+    <!-- AI助手相关脚本 -->
+    <script src="assets/js/config-manager.js" defer></script>
+    <script src="assets/js/api-client.js" defer></script>
+    <script src="assets/js/chat-assistant.js" defer></script>
+</body>
+</html>

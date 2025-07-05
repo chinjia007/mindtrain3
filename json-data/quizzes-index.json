@@ -1,0 +1,46 @@
+{
+  "total": 6,
+  "totalQuestions": 600,
+  "quizzes": [
+    {
+      "id": 1,
+      "title": "题库1：批判性思维题库",
+      "filename": "题库1-批判性思维题库.md",
+      "questionCount": 100
+    },
+    {
+      "id": 2,
+      "title": "题库2：逻辑思维题库",
+      "filename": "题库2-逻辑思维题库.md",
+      "questionCount": 100
+    },
+    {
+      "id": 3,
+      "title": "题库3：系统思维题库",
+      "filename": "题库3-系统思维题库.md",
+      "questionCount": 100
+    },
+    {
+      "id": 4,
+      "title": "题库4：设计思维题库",
+      "filename": "题库4-设计思维题库.md",
+      "questionCount": 100
+    },
+    {
+      "id": 5,
+      "title": "题库5-一叶知秋题库（语言陷阱识别）",
+      "filename": "题库5-一叶知秋题库.md",
+      "questionCount": 100
+    },
+    {
+      "id": 6,
+      "title": "题库6：识人辨言题库",
+      "filename": "题库6-识人辨言题库.md",
+      "questionCount": 100
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2025-07-01T05:30:09.541Z",
+    "version": "1.0.0"
+  }
+}

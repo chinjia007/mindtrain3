@@ -1,0 +1,28 @@
+{
+  "project": {
+    "name": "少儿思维训练",
+    "description": "神奇喵喵思维训练实验室",
+    "version": "1.0.0"
+  },
+  "data": {
+    "courses": {
+      "total": 140,
+      "indexFile": "courses-index.json",
+      "dataDir": "courses/"
+    },
+    "quizzes": {
+      "total": 6,
+      "indexFile": "quizzes-index.json",
+      "dataDir": "quizzes/"
+    },
+    "heartLamps": {
+      "total": 140,
+      "indexFile": "heart-lamps-index.json",
+      "dataDir": "heart-lamps/"
+    }
+  },
+  "metadata": {
+    "generatedAt": "2025-07-01T05:30:09.567Z",
+    "converter": "DocumentConverter v1.0.0"
+  }
+}

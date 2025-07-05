@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全屏布局测试 - 聊天助手</title>
+    <style>
+        /* 直接复制原有的CSS变量和样式 */
+        :root {
+            --ca-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --ca-primary-hover: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --ca-text: #1f2937;
+            --ca-text-light: #6b7280;
+            --ca-text-on-primary: #ffffff;
+            --ca-bg-light: #ffffff;
+            --ca-bg-panel: #ffffff;
+            --ca-bg-messages: #f9fafb;
+            --ca-border-light: #e5e7eb;
+            --ca-shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+            --ca-radius-lg: 16px;
+            --ca-radius-xl: 20px;
+            --ca-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --ca-font: 'DaMengKaTongTi', 'Comic Sans MS', 'Marker Felt', 'Trebuchet MS', cursive, sans-serif;
+            --ca-spacing-xl: 24px;
+            --ca-spacing-lg: 18px;
+        }
+
+        body {
+            font-family: var(--ca-font);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 全屏面板 - 使用原有样式 */
+        .ca-panel {
+            position: fixed;
+            top: 5vh;
+            left: 5vw;
+            width: 90vw;
+            height: 90vh;
+            background: var(--ca-bg-panel);
+            border: 2px solid var(--ca-border-light);
+            border-radius: var(--ca-radius-xl);
+            transform: translateX(0);
+            max-width: none;
+            box-shadow: var(--ca-shadow-xl),
+                        inset 1px 0 0 rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            font-family: var(--ca-font);
+            z-index: 2147482999;
+            overflow: hidden;
+        }
+
+        /* 头部区域 - 使用原有样式 */
+        .ca-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: calc(var(--ca-spacing-xl) + var(--ca-spacing-lg)) calc(var(--ca-spacing-xl) + var(--ca-spacing-lg));
+            background: var(--ca-primary);
+            color: var(--ca-text-on-primary);
+            position: relative;
+            z-index: 1;
+            border-radius: var(--ca-radius-xl) var(--ca-radius-xl) 0 0;
+        }
+
+        /* 标题区域 - 使用原有样式 */
+        .ca-title-wrapper {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ca-logo {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .ca-title {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin: 0;
+            color: var(--ca-text-on-primary);
+        }
+
+        /* 操作按钮区域 - 使用原有样式 */
+        .ca-actions {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .ca-newchat, .ca-fullscreen {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--ca-text-on-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--ca-transition);
+            padding: 0;
+        }
+
+        .ca-newchat:hover, .ca-fullscreen:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* 消息区域 */
+        .messages-area {
+            flex: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: #4f46e5;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            background: white;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* 输入区域 */
+        .input-area {
+            padding: 24px 32px;
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            border-radius: 0 0 18px 18px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            min-height: 44px;
+            max-height: 120px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4f46e5;
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            background: #4f46e5;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .fullscreen-container {
+                top: 2vh;
+                left: 2vw;
+                width: 96vw;
+                height: 96vh;
+            }
+            
+            .chat-header {
+                padding: 16px 20px;
+                min-height: 70px;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .action-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .messages-area,
+            .input-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ca-panel">
+        <!-- 头部区域 -->
+        <header class="ca-header">
+            <!-- 左侧标题区域 -->
+            <div class="ca-title-wrapper">
+                <div class="ca-logo">🤖</div>
+                <h1 class="ca-title">神奇喵喵</h1>
+            </div>
+
+            <!-- 右侧操作区域 -->
+            <div class="ca-actions">
+                <button class="ca-newchat" title="新对话">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="ca-fullscreen" title="退出全屏">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 16H8V19H10V14H5V16ZM8 8H5V10H10V5H8V8ZM14 19H16V16H19V14H14V19ZM16 8V5H14V10H19V8H16Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 消息区域 -->
+        <div class="messages-area">
+            <div class="message assistant">
+                <p>你好！我是神奇喵喵，你的AI助手。有什么我可以帮助你的吗？</p>
+            </div>
+            <div class="message user">
+                <p>你好，请介绍一下你的功能。</p>
+            </div>
+            <div class="message assistant">
+                <p>我可以帮助你解答问题、进行对话、协助学习和工作。我具备以下主要功能：</p>
+                <ul style="margin-top: 8px; padding-left: 20px;">
+                    <li>回答各种问题和提供信息</li>
+                    <li>协助写作和编辑</li>
+                    <li>代码编程支持</li>
+                    <li>学习辅导和解释</li>
+                    <li>创意思维和头脑风暴</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="input-area">
+            <div class="input-container">
+                <textarea class="input-field" placeholder="输入你的消息..." rows="1"></textarea>
+                <button class="send-btn" title="发送">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 自动调整输入框高度
+        const textarea = document.querySelector('.input-field');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // 发送按钮点击事件
+        document.querySelector('.send-btn').addEventListener('click', function() {
+            const message = textarea.value.trim();
+            if (message) {
+                // 这里可以添加发送消息的逻辑
+                console.log('发送消息:', message);
+                textarea.value = '';
+                textarea.style.height = 'auto';
+            }
+        });
+
+        // 回车发送消息
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.querySelector('.send-btn').click();
+            }
+        });
+
+        // 退出全屏按钮
+        document.querySelector('.ca-fullscreen').addEventListener('click', function() {
+            alert('退出全屏模式');
+        });
+
+        // 新对话按钮
+        document.querySelector('.ca-newchat').addEventListener('click', function() {
+            if (confirm('确定要开始新对话吗？当前对话内容将被清除。')) {
+                // 清除消息区域，只保留欢迎消息
+                const messagesArea = document.querySelector('.messages-area');
+                messagesArea.innerHTML = `
+                    <div class="message assistant">
+                        <p>你好！我是神奇喵喵，你的AI助手。有什么我可以帮助你的吗？</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

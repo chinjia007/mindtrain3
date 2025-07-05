@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>localStorage调试测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4338ca;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>localStorage调试测试</h1>
+    
+    <div class="debug-panel">
+        <h3>测试localStorage功能</h3>
+        <button onclick="testSave()">保存测试数据</button>
+        <button onclick="testLoad()">加载测试数据</button>
+        <button onclick="checkChatData()">检查聊天数据</button>
+        <button onclick="clearAll()">清除所有数据</button>
+        <div id="output" class="output">点击按钮开始测试...</div>
+    </div>
+
+    <div class="debug-panel">
+        <h3>聊天助手组件</h3>
+        <chat-assistant></chat-assistant>
+    </div>
+
+    <script src="assets/js/chat-assistant.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+        }
+
+        function testSave() {
+            try {
+                const testData = {
+                    timestamp: Date.now(),
+                    message: '这是一条测试消息'
+                };
+                localStorage.setItem('test-data', JSON.stringify(testData));
+                log('✅ 保存测试数据成功');
+            } catch (error) {
+                log('❌ 保存测试数据失败: ' + error.message);
+            }
+        }
+
+        function testLoad() {
+            try {
+                const data = localStorage.getItem('test-data');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    log('✅ 加载测试数据成功: ' + JSON.stringify(parsed));
+                } else {
+                    log('⚠️ 没有找到测试数据');
+                }
+            } catch (error) {
+                log('❌ 加载测试数据失败: ' + error.message);
+            }
+        }
+
+        function checkChatData() {
+            try {
+                log('=== localStorage内容检查 ===');
+                
+                // 检查主题
+                const theme = localStorage.getItem('ca-theme');
+                log('主题: ' + (theme || '未设置'));
+                
+                // 检查消息
+                const messages = localStorage.getItem('ca-messages');
+                if (messages) {
+                    const parsed = JSON.parse(messages);
+                    log('消息数量: ' + parsed.length);
+                    log('消息内容: ' + JSON.stringify(parsed, null, 2));
+                } else {
+                    log('消息: 未找到');
+                }
+                
+                // 检查所有键
+                const allKeys = Object.keys(localStorage);
+                log('所有localStorage键: ' + allKeys.join(', '));
+                
+            } catch (error) {
+                log('❌ 检查聊天数据失败: ' + error.message);
+            }
+        }
+
+        function clearAll() {
+            try {
+                localStorage.clear();
+                log('✅ 清除所有localStorage数据成功');
+            } catch (error) {
+                log('❌ 清除数据失败: ' + error.message);
+            }
+        }
+
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('=== 页面加载完成，自动检查 ===');
+                checkChatData();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

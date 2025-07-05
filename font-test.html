@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字体测试页 - 喵喵助手</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .font-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        .font-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .font-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .font-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .font-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .font-card.selected .font-name {
+            color: white;
+        }
+        
+        .font-type {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .font-card.selected .font-type {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .font-sample {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .sample-text {
+            margin-bottom: 10px;
+        }
+        
+        .size-large {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        
+        .size-medium {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        
+        .size-small {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #666;
+        }
+        
+        .font-card.selected .size-small {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .font-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .font-card.selected .font-info {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .apply-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .apply-btn.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 字体测试页</h1>
+            <p>选择你最喜欢的字体，为喵喵助手打造最佳阅读体验</p>
+        </div>
+        
+        <div class="font-grid" id="fontGrid">
+            <!-- 字体卡片将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <button class="apply-btn" id="applyBtn">应用选中字体</button>
+    
+    <script>
+        const fonts = [
+            {
+                name: '现代中文',
+                id: 'modern-chinese',
+                type: '系统字体',
+                css: "'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif",
+                description: '跨平台优化，专业美观，适合长时间阅读'
+            },
+            {
+                name: '思源黑体',
+                id: 'noto-sans',
+                type: 'Google字体',
+                css: "'Noto Sans SC', 'Source Han Sans CN', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+                description: 'Google开源字体，设计专业，国际标准'
+            },
+            {
+                name: '思源宋体',
+                id: 'noto-serif',
+                type: 'Google字体',
+                css: "'Noto Serif SC', 'Source Han Serif CN', 'PingFang SC', 'Microsoft YaHei', serif",
+                description: '优雅的衬线字体，适合正式文档'
+            },
+            {
+                name: '苹方体',
+                id: 'pingfang',
+                type: '系统字体',
+                css: "'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', sans-serif",
+                description: '苹果设计，现代简洁，高端感强'
+            },
+            {
+                name: '微软雅黑',
+                id: 'microsoft-yahei',
+                type: '系统字体',
+                css: "'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', sans-serif",
+                description: 'Windows优化，广泛兼容，清晰易读'
+            },
+            {
+                name: '马善政楷体',
+                id: 'ma-shan-zheng',
+                type: 'Google字体',
+                css: "'Ma Shan Zheng', 'PingFang SC', 'Microsoft YaHei', cursive",
+                description: '手写风格，个性鲜明，适合创意内容'
+            },
+            {
+                name: '站酷小薇',
+                id: 'zcool-xiaowei',
+                type: 'Google字体',
+                css: "'ZCOOL XiaoWei', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+                description: '清新可爱，适合年轻用户'
+            },
+            {
+                name: '站酷庆科黄油体',
+                id: 'zcool-qingke',
+                type: 'Google字体',
+                css: "'ZCOOL QingKe HuangYou', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+                description: '圆润可爱，活泼有趣'
+            },
+            {
+                name: '志芒星',
+                id: 'zhi-mang-xing',
+                type: 'Google字体',
+                css: "'Zhi Mang Xing', 'PingFang SC', 'Microsoft YaHei', cursive",
+                description: '手写风格，自然随性'
+            }
+        ];
+        
+        const sampleTexts = [
+            '你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。',
+            '批判性思维是指对信息进行客观分析和评估的能力。',
+            '0123456789 ABCDEFG abcdefg 《》？！：；""''',
+            '这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。'
+        ];
+        
+        let selectedFont = null;
+        
+        function createFontCard(font) {
+            const card = document.createElement('div');
+            card.className = 'font-card';
+            card.dataset.fontId = font.id;
+
+            // 创建字体名称区域
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'font-name';
+            nameDiv.innerHTML = font.name + '<span class="font-type">' + font.type + '</span>';
+
+            // 创建字体样本区域
+            const sampleDiv = document.createElement('div');
+            sampleDiv.className = 'font-sample';
+            sampleDiv.style.fontFamily = font.css;
+
+            const sample1 = document.createElement('div');
+            sample1.className = 'sample-text size-large';
+            sample1.textContent = sampleTexts[0];
+
+            const sample2 = document.createElement('div');
+            sample2.className = 'sample-text size-medium';
+            sample2.textContent = sampleTexts[1];
+
+            const sample3 = document.createElement('div');
+            sample3.className = 'sample-text size-small';
+            sample3.textContent = sampleTexts[2];
+
+            const sample4 = document.createElement('div');
+            sample4.className = 'sample-text size-small';
+            sample4.textContent = sampleTexts[3];
+
+            sampleDiv.appendChild(sample1);
+            sampleDiv.appendChild(sample2);
+            sampleDiv.appendChild(sample3);
+            sampleDiv.appendChild(sample4);
+
+            // 创建描述区域
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'font-info';
+            infoDiv.textContent = font.description;
+
+            // 组装卡片
+            card.appendChild(nameDiv);
+            card.appendChild(sampleDiv);
+            card.appendChild(infoDiv);
+
+            card.addEventListener('click', function() { selectFont(font, card); });
+            return card;
+        }
+        
+        function selectFont(font, card) {
+            document.querySelectorAll('.font-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedFont = font;
+            document.getElementById('applyBtn').classList.add('show');
+        }
+        
+        function applyFont() {
+            if (!selectedFont) return;
+            localStorage.setItem('selectedFont', JSON.stringify(selectedFont));
+            alert(`字体已保存：${selectedFont.name}\n请返回主页面查看效果`);
+        }
+        
+        function init() {
+            console.log('初始化开始...');
+            const fontGrid = document.getElementById('fontGrid');
+            console.log('fontGrid:', fontGrid);
+            console.log('fonts数量:', fonts.length);
+
+            if (!fontGrid) {
+                console.error('找不到fontGrid元素');
+                return;
+            }
+
+            fonts.forEach((font, index) => {
+                console.log('创建字体卡片:', font.name);
+                const card = createFontCard(font);
+                fontGrid.appendChild(card);
+            });
+
+            const firstCard = fontGrid.querySelector('.font-card');
+            if (firstCard) {
+                selectFont(fonts[0], firstCard);
+            }
+
+            console.log('初始化完成');
+        }
+
+        document.getElementById('applyBtn').addEventListener('click', applyFont);
+
+        // 确保DOM加载完成后执行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

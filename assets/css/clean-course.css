@@ -1,0 +1,282 @@
+/* 
+ * 课程详情页面样式
+ * 神奇喵喵思维训练实验室
+ */
+
+/* 基础重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, #ffffff 0%, #fafafa 50%, #ffffff 100%);
+    min-height: 100vh;
+    color: #1d1d1f;
+    line-height: 1.6;
+}
+
+/* 主导航 */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.nav-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: #86868b;
+    margin: 0;
+    font-weight: 400;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #1d1d1f;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #007AFF;
+}
+
+/* 课程内容容器 */
+.course-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 20px 60px;
+}
+
+/* 课程头部 */
+.course-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.course-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.course-meta {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 0.9rem;
+    color: #86868b;
+    margin-bottom: 20px;
+}
+
+.course-description {
+    font-size: 1.125rem;
+    color: #64748b;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 课程内容 */
+.course-content {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.course-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 30px 0 16px 0;
+    line-height: 1.3;
+}
+
+.course-content h2:first-child {
+    margin-top: 0;
+}
+
+.course-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 24px 0 12px 0;
+    line-height: 1.4;
+}
+
+.course-content p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 16px;
+}
+
+.course-content ul,
+.course-content ol {
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.course-content li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.course-content blockquote {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+    border-left: 4px solid #3b82f6;
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 8px;
+    font-style: italic;
+    color: #1e40af;
+}
+
+.course-content strong {
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+.course-content em {
+    font-style: italic;
+    color: #6366f1;
+}
+
+/* 课程导航 */
+.course-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #1d1d1f;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .course-container {
+        padding: 90px 16px 40px;
+    }
+    
+    .course-title {
+        font-size: 2rem;
+    }
+    
+    .course-content {
+        padding: 24px;
+    }
+    
+    .course-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .course-navigation {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .nav-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .course-title {
+        font-size: 1.75rem;
+    }
+    
+    .course-content {
+        padding: 20px;
+    }
+    
+    .course-content h2 {
+        font-size: 1.25rem;
+    }
+    
+    .course-content h3 {
+        font-size: 1.125rem;
+    }
+}

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 助手主题色方案预览</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        body {
+            font-family: 'DaMengKaTongTi', Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .theme-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .theme-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* 悬浮球预览 */
+        .ball-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-family: 'MengChoTiNaDiTi', cursive;
+            font-size: 18px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        /* 聊天面板预览 */
+        .panel-preview {
+            height: 200px;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .panel-logo {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .panel-title {
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .message-preview {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DaMengKaTongTi', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-weight: 500;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 主题1: 神奇橙猫 */
+        .theme1 .ball-preview {
+            background: linear-gradient(135deg, #ff7f50 0%, #ff6347 100%);
+            box-shadow: 0 5px 20px rgba(255, 127, 80, 0.4);
+        }
+        .theme1 .panel-preview {
+            background: linear-gradient(135deg, #ff7f50 0%, #ff6347 100%);
+        }
+        .theme1 .apply-btn {
+            background: linear-gradient(135deg, #ff7f50 0%, #ff6347 100%);
+        }
+
+        /* 主题2: 梦幻粉猫 */
+        .theme2 .ball-preview {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            box-shadow: 0 5px 20px rgba(255, 154, 158, 0.4);
+        }
+        .theme2 .panel-preview {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+        .theme2 .apply-btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        /* 主题3: 翡翠绿猫 */
+        .theme3 .ball-preview {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            box-shadow: 0 5px 20px rgba(86, 171, 47, 0.4);
+        }
+        .theme3 .panel-preview {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+        .theme3 .apply-btn {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+
+        /* 主题4: 天空蓝猫 */
+        .theme4 .ball-preview {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            box-shadow: 0 5px 20px rgba(116, 185, 255, 0.4);
+        }
+        .theme4 .panel-preview {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        .theme4 .apply-btn {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+
+        /* 主题5: 彩虹渐变猫 */
+        .theme5 .ball-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .theme5 .panel-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .theme5 .apply-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        /* 主题6: 深夜黑猫 */
+        .theme6 .ball-preview {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 0 5px 20px rgba(44, 62, 80, 0.6);
+            border: 2px solid #ecf0f1;
+        }
+        .theme6 .panel-preview {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+        .theme6 .apply-btn {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        /* 主题7: 日落金猫 */
+        .theme7 .ball-preview {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.5);
+        }
+        .theme7 .panel-preview {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        .theme7 .apply-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        /* 主题8: 薰衣草紫猫 */
+        .theme8 .ball-preview {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+        }
+        .theme8 .panel-preview {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        .theme8 .apply-btn {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        /* 主题9: 樱花粉猫 */
+        .theme9 .ball-preview {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            box-shadow: 0 5px 20px rgba(253, 121, 168, 0.4);
+        }
+        .theme9 .panel-preview {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+        }
+        .theme9 .apply-btn {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+        }
+
+        /* 主题10: 极光猫 */
+        .theme10 .ball-preview {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #74b9ff 100%);
+            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.4);
+        }
+        .theme10 .panel-preview {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #74b9ff 100%);
+        }
+        .theme10 .apply-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #74b9ff 100%);
+        }
+
+        /* 主题11: 火焰红猫 */
+        .theme11 .ball-preview {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+            box-shadow: 0 5px 20px rgba(225, 112, 85, 0.5);
+        }
+        .theme11 .panel-preview {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+        }
+        .theme11 .apply-btn {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+        }
+
+        /* 主题12: 星空猫 */
+        .theme12 .ball-preview {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            box-shadow: 0 5px 20px rgba(45, 52, 54, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+        .theme12 .ball-preview::before {
+            content: '✨';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 10px;
+            animation: twinkle 2s infinite;
+        }
+        .theme12 .panel-preview {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+        }
+        .theme12 .apply-btn {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .current-theme {
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .current-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffd700;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 神奇喵喵助手主题方案</h1>
+        <p class="subtitle">12种精美主题任你选择，让助手更有个性！</p>
+        
+        <div class="themes-grid">
+            <!-- 主题1: 神奇橙猫 -->
+            <div class="theme-card theme1">
+                <div class="current-badge">当前使用</div>
+                <div class="theme-name">🧡 神奇橙猫</div>
+                <div class="theme-description">
+                    温暖活泼的橙色调，与"神奇喵喵"的橙色渐变完美呼应，充满活力和创造力
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('orange')">应用橙猫主题</button>
+            </div>
+
+            <!-- 主题2: 梦幻粉猫 -->
+            <div class="theme-card theme2">
+                <div class="theme-name">💖 梦幻粉猫</div>
+                <div class="theme-description">
+                    柔美的粉色渐变，温柔可爱，特别适合女孩子使用，营造梦幻童话般的体验
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('pink')">应用粉猫主题</button>
+            </div>
+
+            <!-- 主题3: 翡翠绿猫 -->
+            <div class="theme-card theme3">
+                <div class="theme-name">💚 翡翠绿猫</div>
+                <div class="theme-description">
+                    清新的绿色调，象征成长和智慧，给人自然舒适的感觉，护眼又有活力
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('green')">应用绿猫主题</button>
+            </div>
+
+            <!-- 主题4: 天空蓝猫 -->
+            <div class="theme-card theme4">
+                <div class="theme-name">💙 天空蓝猫</div>
+                <div class="theme-description">
+                    清澈的蓝色调，代表智慧和冷静，给人专业可靠的感觉，适合理性思维训练
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('blue')">应用蓝猫主题</button>
+            </div>
+
+            <!-- 主题5: 彩虹渐变猫 -->
+            <div class="theme-card theme5">
+                <div class="theme-name">🌈 彩虹渐变猫</div>
+                <div class="theme-description">
+                    多彩渐变设计，充满想象力和创造力，象征无限可能，让学习变得更有趣
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('rainbow')">应用彩虹主题</button>
+            </div>
+
+            <!-- 主题6: 深夜黑猫 -->
+            <div class="theme-card theme6">
+                <div class="theme-name">🖤 深夜黑猫</div>
+                <div class="theme-description">
+                    神秘优雅的深色调，护眼模式，适合夜晚使用，给人专业沉稳的感觉
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('dark')">应用黑猫主题</button>
+            </div>
+
+            <!-- 主题7: 日落金猫 -->
+            <div class="theme-card theme7">
+                <div class="theme-name">🌅 日落金猫</div>
+                <div class="theme-description">
+                    温暖的金色调，如日落般温馨，给人富贵吉祥的感觉，充满正能量
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('gold')">应用金猫主题</button>
+            </div>
+
+            <!-- 主题8: 薰衣草紫猫 -->
+            <div class="theme-card theme8">
+                <div class="theme-name">💜 薰衣草紫猫</div>
+                <div class="theme-description">
+                    经典的紫色调（当前默认），优雅神秘，有助于激发创造力和想象力
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('purple')">应用紫猫主题</button>
+            </div>
+
+            <!-- 主题9: 樱花粉猫 -->
+            <div class="theme-card theme9">
+                <div class="theme-name">🌸 樱花粉猫</div>
+                <div class="theme-description">
+                    浪漫的樱花粉配金色，如春天般温暖，给人甜美可爱的感觉
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('sakura')">应用樱花主题</button>
+            </div>
+
+            <!-- 主题10: 极光猫 -->
+            <div class="theme-card theme10">
+                <div class="theme-name">🌌 极光猫</div>
+                <div class="theme-description">
+                    神奇的极光色彩，绿蓝渐变，如北极光般梦幻，激发探索精神
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('aurora')">应用极光主题</button>
+            </div>
+
+            <!-- 主题11: 火焰红猫 -->
+            <div class="theme-card theme11">
+                <div class="theme-name">🔥 火焰红猫</div>
+                <div class="theme-description">
+                    热情的火焰红，充满活力和激情，激发斗志，适合挑战性学习
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('fire')">应用火焰主题</button>
+            </div>
+
+            <!-- 主题12: 星空猫 -->
+            <div class="theme-card theme12">
+                <div class="theme-name">⭐ 星空猫</div>
+                <div class="theme-description">
+                    深邃的星空色彩，带有闪烁星星效果，激发对宇宙的好奇和想象
+                </div>
+                <div class="ball-preview">AI</div>
+                <div class="panel-preview">
+                    <div class="panel-header">
+                        <div class="panel-logo"></div>
+                        <div class="panel-title">喵喵助手</div>
+                    </div>
+                    <div class="message-preview">你好呀小朋友！🌈</div>
+                    <div class="message-preview">我是你的智能小助手</div>
+                    <div class="message-preview">有什么想聊的吗？</div>
+                </div>
+                <button class="apply-btn" onclick="applyTheme('starry')">应用星空主题</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="color: #666; font-size: 1rem;">
+                💡 点击"应用主题"按钮可以实时预览效果，选择你最喜欢的主题色彩！
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function applyTheme(themeName) {
+            const themes = {
+                orange: {
+                    primary: 'linear-gradient(135deg, #ff7f50 0%, #ff6347 100%)',
+                    shadow: 'rgba(255, 127, 80, 0.4)'
+                },
+                pink: {
+                    primary: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                    shadow: 'rgba(255, 154, 158, 0.4)'
+                },
+                green: {
+                    primary: 'linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%)',
+                    shadow: 'rgba(86, 171, 47, 0.4)'
+                },
+                blue: {
+                    primary: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
+                    shadow: 'rgba(116, 185, 255, 0.4)'
+                },
+                rainbow: {
+                    primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                    shadow: 'rgba(102, 126, 234, 0.4)'
+                },
+                dark: {
+                    primary: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+                    shadow: 'rgba(44, 62, 80, 0.6)'
+                },
+                gold: {
+                    primary: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+                    shadow: 'rgba(243, 156, 18, 0.5)'
+                },
+                purple: {
+                    primary: 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)',
+                    shadow: 'rgba(155, 89, 182, 0.4)'
+                },
+                sakura: {
+                    primary: 'linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%)',
+                    shadow: 'rgba(253, 121, 168, 0.4)'
+                },
+                aurora: {
+                    primary: 'linear-gradient(135deg, #00b894 0%, #00cec9 50%, #74b9ff 100%)',
+                    shadow: 'rgba(0, 184, 148, 0.4)'
+                },
+                fire: {
+                    primary: 'linear-gradient(135deg, #e17055 0%, #d63031 100%)',
+                    shadow: 'rgba(225, 112, 85, 0.5)'
+                },
+                starry: {
+                    primary: 'linear-gradient(135deg, #2d3436 0%, #636e72 100%)',
+                    shadow: 'rgba(45, 52, 54, 0.6)'
+                }
+            };
+
+            if (window.ChatAssistant && window.ChatAssistant.updateTheme) {
+                window.ChatAssistant.updateTheme(themes[themeName]);
+                alert(`已应用 ${themeName} 主题！请返回主页面查看效果。`);
+            } else {
+                alert(`主题选择：${themeName}\n请返回主页面查看效果！`);
+            }
+
+            // 更新当前主题标识
+            document.querySelectorAll('.current-badge').forEach(badge => badge.remove());
+            document.querySelectorAll('.current-theme').forEach(card => card.classList.remove('current-theme'));
+            
+            const selectedCard = event.target.closest('.theme-card');
+            selectedCard.classList.add('current-theme');
+            const badge = document.createElement('div');
+            badge.className = 'current-badge';
+            badge.textContent = '当前使用';
+            selectedCard.appendChild(badge);
+        }
+
+        // 页面加载完成后的提示
+        window.addEventListener('load', function() {
+            console.log('主题预览页面已加载');
+        });
+    </script>
+</body>
+</html>

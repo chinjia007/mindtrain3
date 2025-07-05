@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进度测试 - 神奇喵喵思维训练实验室</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background: #0056CC;
+        }
+        
+        .progress-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        
+        .module-progress {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .module-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #007AFF;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 学习进度测试系统</h1>
+    
+    <div class="test-section">
+        <h2>📊 当前进度概览</h2>
+        <div class="module-progress" id="moduleProgress">
+            <!-- 动态生成模块进度 -->
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 测试操作</h2>
+        <h3>模拟课程访问（50%完成度）</h3>
+        <button class="button" onclick="testVisit('critical', 1)">访问 批判性思维-第1课</button>
+        <button class="button" onclick="testVisit('logical', 1)">访问 逻辑思维-第1课</button>
+        <button class="button" onclick="testVisit('trap', 1)">访问 一叶知秋-第1课</button>
+        
+        <h3>模拟课程完成（100%完成度）</h3>
+        <button class="button" onclick="testComplete('critical', 1)">完成 批判性思维-第1课</button>
+        <button class="button" onclick="testComplete('logical', 1)">完成 逻辑思维-第1课</button>
+        <button class="button" onclick="testComplete('trap', 1)">完成 一叶知秋-第1课</button>
+        
+        <h3>批量测试</h3>
+        <button class="button" onclick="testBatchVisit()">批量访问前5课</button>
+        <button class="button" onclick="testBatchComplete()">批量完成前3课</button>
+        
+        <h3>重置操作</h3>
+        <button class="button" onclick="resetModule('critical')" style="background: #FF3B30;">重置批判性思维</button>
+        <button class="button" onclick="resetAll()" style="background: #FF3B30;">重置所有进度</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 详细进度数据</h2>
+        <button class="button" onclick="showDetailedProgress()">显示详细数据</button>
+        <div class="progress-display" id="detailedProgress">
+            点击上方按钮查看详细进度数据
+        </div>
+    </div>
+
+    <script src="assets/js/progress-manager.js"></script>
+    <script>
+        // 等待进度管理器初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressDisplay();
+        });
+
+        function testVisit(moduleId, courseNumber) {
+            window.progressManager.markCourseVisited(moduleId, courseNumber);
+            updateProgressDisplay();
+            console.log(`测试访问: ${moduleId}-${courseNumber}`);
+        }
+
+        function testComplete(moduleId, courseNumber) {
+            window.progressManager.markCourseCompleted(moduleId, courseNumber);
+            updateProgressDisplay();
+            console.log(`测试完成: ${moduleId}-${courseNumber}`);
+        }
+
+        function testBatchVisit() {
+            const modules = ['critical', 'logical', 'system', 'design', 'trap'];
+            modules.forEach(moduleId => {
+                for (let i = 1; i <= 5; i++) {
+                    window.progressManager.markCourseVisited(moduleId, i);
+                }
+            });
+            updateProgressDisplay();
+            console.log('批量访问测试完成');
+        }
+
+        function testBatchComplete() {
+            const modules = ['critical', 'logical', 'system'];
+            modules.forEach(moduleId => {
+                for (let i = 1; i <= 3; i++) {
+                    window.progressManager.markCourseCompleted(moduleId, i);
+                }
+            });
+            updateProgressDisplay();
+            console.log('批量完成测试完成');
+        }
+
+        function resetModule(moduleId) {
+            window.progressManager.resetModuleProgress(moduleId);
+            updateProgressDisplay();
+            console.log(`重置模块: ${moduleId}`);
+        }
+
+        function resetAll() {
+            window.progressManager.resetAllProgress();
+            updateProgressDisplay();
+            console.log('重置所有进度');
+        }
+
+        function updateProgressDisplay() {
+            const allProgress = window.progressManager.getAllModulesProgress();
+            const container = document.getElementById('moduleProgress');
+            
+            container.innerHTML = '';
+            
+            Object.entries(allProgress).forEach(([moduleId, progress]) => {
+                const moduleCard = document.createElement('div');
+                moduleCard.className = 'module-card';
+                moduleCard.innerHTML = `
+                    <h4>${window.progressManager.moduleConfig[moduleId].name}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress.percentage}%"></div>
+                    </div>
+                    <div>进度: ${progress.percentage}%</div>
+                    <div>状态: ${progress.status}</div>
+                    <div>完成: ${progress.completed}/${progress.total}</div>
+                    <div>访问: ${progress.visited}</div>
+                `;
+                container.appendChild(moduleCard);
+            });
+        }
+
+        function showDetailedProgress() {
+            const allProgress = window.progressManager.getAllModulesProgress();
+            const rawData = window.progressManager.getProgressData();
+            
+            const display = document.getElementById('detailedProgress');
+            display.innerHTML = `
+                <h4>模块进度汇总:</h4>
+                <pre>${JSON.stringify(allProgress, null, 2)}</pre>
+                
+                <h4>原始进度数据:</h4>
+                <pre>${JSON.stringify(rawData, null, 2)}</pre>
+            `;
+        }
+    </script>
+</body>
+</html>

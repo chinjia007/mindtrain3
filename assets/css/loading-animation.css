@@ -1,0 +1,319 @@
+/* 
+ * 高级艺术感加载动画
+ * 神奇喵喵思维训练实验室
+ */
+
+/* 加载屏幕容器 */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #ffffff 0%, #fafafa 50%, #ffffff 100%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loading-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* 品牌标识 */
+.loading-brand {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: brandFadeIn 1.2s ease-out;
+}
+
+.loading-brand h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #1d1d1f 0%, #666 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.loading-brand p {
+    font-size: 1.125rem;
+    color: #86868b;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* 艺术几何加载动画 */
+.loading-animation {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 40px;
+}
+
+/* 旋转的几何图形 */
+.geometric-shape {
+    position: absolute;
+    border-radius: 50%;
+    animation: rotate 3s linear infinite;
+}
+
+.shape-1 {
+    width: 120px;
+    height: 120px;
+    border: 3px solid transparent;
+    border-top: 3px solid #ff6b6b;
+    border-right: 3px solid #4fc3f7;
+    animation-duration: 2s;
+}
+
+.shape-2 {
+    width: 80px;
+    height: 80px;
+    top: 20px;
+    left: 20px;
+    border: 2px solid transparent;
+    border-bottom: 2px solid #66bb6a;
+    border-left: 2px solid #ffca28;
+    animation-duration: 1.5s;
+    animation-direction: reverse;
+}
+
+.shape-3 {
+    width: 40px;
+    height: 40px;
+    top: 40px;
+    left: 40px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ab47bc;
+    border-right: 2px solid #ff9800;
+    animation-duration: 1s;
+}
+
+/* 浮动粒子效果 */
+.loading-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(45deg, #ff6b6b, #4fc3f7);
+    border-radius: 50%;
+    animation: float 4s ease-in-out infinite;
+}
+
+.particle:nth-child(1) {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+    background: linear-gradient(45deg, #ff6b6b, #ffa726);
+}
+
+.particle:nth-child(2) {
+    top: 30%;
+    right: 25%;
+    animation-delay: 0.5s;
+    background: linear-gradient(45deg, #4fc3f7, #7986cb);
+}
+
+.particle:nth-child(3) {
+    bottom: 25%;
+    left: 30%;
+    animation-delay: 1s;
+    background: linear-gradient(45deg, #66bb6a, #26a69a);
+}
+
+.particle:nth-child(4) {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 1.5s;
+    background: linear-gradient(45deg, #ffca28, #ff7043);
+}
+
+.particle:nth-child(5) {
+    top: 50%;
+    left: 10%;
+    animation-delay: 2s;
+    background: linear-gradient(45deg, #ab47bc, #5c6bc0);
+}
+
+.particle:nth-child(6) {
+    top: 60%;
+    right: 15%;
+    animation-delay: 2.5s;
+    background: linear-gradient(45deg, #ff9800, #f44336);
+}
+
+/* 加载文字 */
+.loading-text {
+    font-size: 1rem;
+    color: #86868b;
+    font-weight: 500;
+    text-align: center;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+/* 进度指示器 */
+.loading-progress {
+    width: 200px;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 1px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b6b, #4fc3f7, #66bb6a, #ffca28);
+    background-size: 400% 100%;
+    border-radius: 1px;
+    animation: progressFlow 2s ease-in-out infinite, progressMove 3s ease-out;
+    width: 0%;
+}
+
+/* 动画定义 */
+@keyframes brandFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes textPulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes progressFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes progressMove {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .loading-brand h1 {
+        font-size: 2.5rem;
+    }
+    
+    .loading-brand p {
+        font-size: 1rem;
+    }
+    
+    .loading-animation {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .shape-1 {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .shape-2 {
+        width: 70px;
+        height: 70px;
+        top: 15px;
+        left: 15px;
+    }
+    
+    .shape-3 {
+        width: 35px;
+        height: 35px;
+        top: 32px;
+        left: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-brand h1 {
+        font-size: 2rem;
+    }
+    
+    .loading-animation {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .shape-1 {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .shape-2 {
+        width: 55px;
+        height: 55px;
+        top: 12px;
+        left: 12px;
+    }
+    
+    .shape-3 {
+        width: 30px;
+        height: 30px;
+        top: 25px;
+        left: 25px;
+    }
+    
+    .loading-progress {
+        width: 150px;
+    }
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嵌入式助手UI优化演示</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+
+    <!-- 防止主题闪烁的内联脚本 -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('ca-theme');
+                if (savedTheme && savedTheme !== 'default') {
+                    const themes = {
+                        'purple-dream': { primary: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)', solidColor: '#8B5CF6', shadow: 'rgba(139, 92, 246, 0.3)' },
+                        'ocean-blue': { primary: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)', solidColor: '#3B82F6', shadow: 'rgba(59, 130, 246, 0.3)' },
+                        'forest-green': { primary: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)', solidColor: '#10B981', shadow: 'rgba(16, 185, 129, 0.3)' },
+                        'sunset-orange': { primary: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)', solidColor: '#F59E0B', shadow: 'rgba(245, 158, 11, 0.3)' },
+                        'cherry-pink': { primary: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)', solidColor: '#EC4899', shadow: 'rgba(236, 72, 153, 0.3)' }
+                    };
+                    const theme = themes[savedTheme];
+                    if (theme) {
+                        window.caThemePreApplied = savedTheme;
+                        const root = document.documentElement;
+                        root.style.setProperty('--ca-primary', theme.primary);
+                        root.style.setProperty('--ca-primary-solid', theme.solidColor);
+                        root.style.setProperty('--ca-primary-dark', theme.solidColor);
+                        root.style.setProperty('--ca-primary-light', theme.solidColor);
+                        root.style.setProperty('--ca-primary-shadow', theme.shadow);
+                        root.style.setProperty('--ca-border-light', theme.shadow.replace(/[\d\.]+\)$/, '0.2)'));
+                        root.style.setProperty('--ca-hover-bg', theme.shadow.replace(/[\d\.]+\)$/, '0.02)'));
+                        root.style.setProperty('--ca-focus-shadow', theme.shadow.replace(/[\d\.]+\)$/, '0.1)'));
+                    }
+                }
+            } catch (error) {
+                console.warn('[PreTheme] 提前应用主题失败:', error);
+            }
+        })();
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        
+        .demo-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 24px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #6366f1;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+        
+        .feature-description {
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .demo-container {
+                padding: 24px;
+            }
+            
+            .demo-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">🎨 嵌入式助手UI优化</h1>
+            <p class="demo-subtitle">现代化、高级、圆润的对话助手界面设计</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">移除毛玻璃效果</h3>
+                <p class="feature-description">采用纯色背景设计，提供更清晰的视觉体验，避免毛玻璃效果可能带来的性能问题。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌟</div>
+                <h3 class="feature-title">现代化配色系统</h3>
+                <p class="feature-description">全新的渐变色彩方案，采用<span class="highlight">蓝紫色</span>和<span class="highlight">粉色</span>渐变，营造高级质感。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">圆润设计语言</h3>
+                <p class="feature-description">增大圆角半径，优化阴影层次，打造更加圆润流畅的视觉效果。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3 class="feature-title">精致交互动效</h3>
+                <p class="feature-description">更自然的缓动函数，流畅的悬浮和点击反馈，提升用户交互体验。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">优化移动端适配</h3>
+                <p class="feature-description">针对移动设备优化间距、尺寸和交互区域，确保在各种设备上的完美体验。</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📏</div>
+                <h3 class="feature-title">充分利用面板空间</h3>
+                <p class="feature-description">助手消息去除气泡设计，采用左边框样式，充分利用面板宽度，提升内容展示效率。</p>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h2 class="cta-title">体验全新的对话助手</h2>
+            <p class="cta-description">点击右下角的悬浮球，体验优化后的现代化UI设计</p>
+            <a href="#" class="cta-button" onclick="window.ChatAssistant?.toggle(); return false;">
+                <span>🚀</span>
+                <span>立即体验</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 加载嵌入式助手 -->
+    <script src="assets/js/chat-assistant.js" defer></script>
+</body>
+</html>

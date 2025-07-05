@@ -1,0 +1,35 @@
+{
+  "systemPrompt": "你是一个有帮助的AI助手。请友好、准确地回答用户的问题。请尽量使用Markdown格式来组织你的回答，例如使用标题、列表和粗体来突出重点。对于代码示例，请使用带有语言标识的Markdown代码块。",
+  "models": {
+    "doubao-lite": {
+      "name": "豆包-轻量版",
+      "description": "快速响应，适合日常对话",
+      "apiKey": "0c1210af-8aeb-47e5-a4c2-2844281b5355",
+      "apiUrl": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+      "modelId": "doubao-1-5-lite-32k-250115",
+      "provider": "volcengine"
+    },
+    "doubao-pro": {
+      "name": "DeepSeek-V3",
+      "description": "高质量输出，适合复杂任务",
+      "apiKey": "0c1210af-8aeb-47e5-a4c2-2844281b5355",
+      "apiUrl": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+      "modelId": "deepseek-v3-250324",
+      "provider": "volcengine"
+    }
+  },
+  "defaultModel": "doubao-lite",
+  "globalSettings": {
+    "maxTokens": 500,
+    "temperature": 0.7,
+    "topP": 0.95,
+    "frequencyPenalty": 0,
+    "presencePenalty": 0
+  },
+  "_comments": {
+    "systemPrompt": "全局系统提示词，对所有模型生效",
+    "models": "当前支持的火山引擎豆包模型",
+    "defaultModel": "默认选择的模型",
+    "globalSettings": "全局参数设置，对所有模型生效"
+  }
+} 

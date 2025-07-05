@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逻辑思维 - 神奇喵喵思维训练实验室</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/course-navigation.css">
+    <link rel="stylesheet" href="assets/css/loading-animation.css">
+    <link rel="stylesheet" href="assets/css/pixel-cat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- AIGC神经网络背景 -->
+    <div class="generative-background">
+        <canvas class="neural-art" id="neuralCanvas"></canvas>
+    </div>
+    
+    <!-- 分离式品牌标题 -->
+    <header class="split-brand-header">
+        <div class="brand-left">
+            <h1 class="artistic-brand-title">神奇喵喵</h1>
+            <p class="artistic-brand-subtitle-below">思维训练实验室</p>
+        </div>
+        <div class="brand-right">
+            <a href="index.html" class="home-button">
+                <svg class="home-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>返回主页</span>
+            </a>
+        </div>
+    </header>
+    
+    <!-- 模块主体 -->
+    <main class="module-main module-logical">
+        <!-- 模块头部 -->
+        <div class="module-header">
+            <div class="module-icon-large">⚡</div>
+            <h1 class="module-title">逻辑思维</h1>
+            <p class="module-subtitle">构建理性框架，驾驭推理艺术</p>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">32</span>
+                        <span class="stat-label">课程总数</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">学习层级</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">0%</span>
+                        <span class="stat-label">完成进度</span>
+                    </div>
+                </div>
+            <a href="quiz.html?module=logical" class="enter-quiz-btn">进入训练场</a>
+            </div>
+
+            <!-- 学习路径 -->
+            <div class="learning-path" id="learningPath">
+                <!-- 动态生成学习层级 -->
+            </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="simple-footer">
+        <div class="footer-content">
+            <nav class="footer-nav">
+                <a href="index.html" class="footer-link">返回首页</a>
+                <a href="index.html#modules" class="footer-link">其他模块</a>
+                <a href="quiz.html?module=logical" class="footer-link">训练场</a>
+                <a href="index.html#about" class="footer-link">关于我们</a>
+            </nav>
+            <p>&copy; 2025 神奇喵喵思维训练实验室. 保留所有权利.</p>
+        </div>
+    </footer>
+
+
+
+    <script>
+        // 逻辑思维模块页面脚本
+        class LogicalThinkingModule {
+            constructor() {
+                this.coursesData = null;
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadCoursesData();
+                    this.renderLearningPath();
+                } catch (error) {
+                    console.error('加载课程数据失败:', error);
+                    this.showError();
+                }
+            }
+
+            async loadCoursesData() {
+                const response = await fetch('json-data/courses-index.json');
+                if (!response.ok) {
+                    throw new Error('课程索引文件不存在');
+                }
+                this.coursesData = await response.json();
+            }
+
+            filterLogicalThinkingCourses() {
+                const allCourses = this.coursesData.courses;
+
+                // 筛选逻辑思维相关课程
+                const logicalCourses = allCourses.filter(course =>
+                    course.filename.includes('逻辑思维') ||
+                    course.title.includes('逻辑思维') ||
+                    (course.id >= 11 && course.id <= 22) || // 入门模块的逻辑思维课程
+                    (course.id >= 53 && course.id <= 64) || // 基础模块的逻辑思维课程
+                    (course.id >= 95 && course.id <= 106)   // 进阶模块的逻辑思维课程
+                );
+
+                // 按层级分组
+                const levels = {
+                    beginner: logicalCourses.filter(course => course.id >= 11 && course.id <= 22),
+                    intermediate: logicalCourses.filter(course => course.id >= 53 && course.id <= 64),
+                    advanced: logicalCourses.filter(course => course.id >= 95 && course.id <= 106)
+                };
+
+                return [
+                    {
+                        id: 'beginner',
+                        name: '入门模块',
+                        icon: '🌱',
+                        description: '建立逻辑思维的基础认知框架',
+                        courses: levels.beginner
+                    },
+                    {
+                        id: 'intermediate',
+                        name: '基础模块',
+                        icon: '🏗️',
+                        description: '深化逻辑思维技能，掌握核心推理方法',
+                        courses: levels.intermediate
+                    },
+                    {
+                        id: 'advanced',
+                        name: '进阶模块',
+                        icon: '🚀',
+                        description: '掌握高级逻辑思维技巧，成为推理专家',
+                        courses: levels.advanced
+                    }
+                ];
+            }
+
+            renderLearningPath() {
+                const pathContainer = document.getElementById('learningPath');
+                const levels = this.filterLogicalThinkingCourses();
+
+                // 为每个课程分配颜色阶段和图标
+                const colorStages = ['beginner', 'intermediate', 'advanced', 'expert', 'master'];
+                const icons = ['🧠', '🔗', '⚡', '🎯', '💎'];
+
+
+
+                // 将所有课程平铺到网格中，按级别分配颜色
+                const allCourses = [];
+                levels.forEach((level, levelIndex) => {
+                    level.courses.forEach((course, courseIndex) => {
+                        const colorStage = colorStages[levelIndex % colorStages.length];
+                        const icon = icons[levelIndex % icons.length];
+                        allCourses.push({...course, colorStage, icon});
+                    });
+                });
+
+                pathContainer.innerHTML = allCourses.map((course, idx) => {
+                    // 精致的等级系统
+                    const difficultyMap = {
+                        'beginner': { label: '入门级', class: 'beginner', description: '基础学习' },
+                        'intermediate': { label: '基础级', class: 'intermediate', description: '进阶学习' },
+                        'advanced': { label: '进阶级', class: 'advanced', description: '挑战学习' },
+                        'expert': { label: '高级', class: 'expert', description: '深度学习' },
+                        'master': { label: '精通级', class: 'master', description: '专家级学习' }
+                    };
+
+                    const difficulty = difficultyMap[course.colorStage] || difficultyMap['beginner'];
+
+                    return `
+                        <a href="course-detail.html?id=${course.id}" class="course-card" data-level="${course.colorStage}">
+                            <div class="difficulty-label ${difficulty.class}">${difficulty.label}</div>
+                            <div class="course-card-header">
+                                <div class="course-number">${(idx+1).toString().padStart(2, '0')}</div>
+                                <div class="difficulty-badge ${difficulty.class}"></div>
+                            </div>
+                            <h3 class="course-title">${course.title.replace(/^第\d+课：/, '')}</h3>
+                            <div class="course-meta">
+                                <span>⏱️ ${course.duration || '23分钟'}</span>
+                                <span>•</span>
+                                <span>未开始</span>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+
+                // 添加补充包课程卡片
+                pathContainer.innerHTML += `
+                    <a href="course-detail.html?id=146" class="course-card extension" data-level="extension">
+                        <div class="difficulty-label extension">补充包</div>
+                        <div class="course-card-header">
+                            <div class="course-number">补充</div>
+                            <div class="difficulty-badge extension"></div>
+                        </div>
+                        <h3 class="course-title">复杂情境补充包</h3>
+                        <div class="course-meta">
+                            <span>🔍 高级思考</span>
+                        </div>
+                    </a>
+                `;
+            }
+
+            showError() {
+                document.getElementById('learningPath').innerHTML = `
+                    <div class="level-section">
+                        <div class="level-header">
+                            <h2 class="level-title">加载失败</h2>
+                            <p class="level-description">无法加载课程列表，请检查文件是否存在。</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new LogicalThinkingModule();
+        });
+    </script>
+
+    <!-- JavaScript -->
+    <script src="assets/js/loading-animation.js"></script>
+    <script src="assets/js/neural-art.js"></script>
+    <script src="assets/js/pixel-cat.js"></script>
+    <script src="assets/js/card-title-enhancer.js"></script>
+    <script src="assets/js/chat-assistant.js" defer></script>
+</body>
+</html>

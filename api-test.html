@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI API 测试页面</h1>
+        
+        <div class="test-section">
+            <h3>1. 配置检查</h3>
+            <button onclick="checkConfig()">检查配置</button>
+            <div id="configResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. API连接测试</h3>
+            <button onclick="testConnection()">测试连接</button>
+            <div id="connectionResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 简单对话测试</h3>
+            <input type="text" id="testMessage" placeholder="输入测试消息..." value="你好，请简单回复一下">
+            <br>
+            <button onclick="testChat()">发送测试消息</button>
+            <button onclick="testChatStream()">流式测试</button>
+            <div id="chatResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. 模型切换测试</h3>
+            <button onclick="testModel('doubao-lite')">测试豆包轻量版</button>
+            <button onclick="testModel('doubao-pro')">测试DeepSeek-V3</button>
+            <div id="modelResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 配置信息
+        const config = {
+            "systemPrompt": "你是一个有帮助的AI助手。",
+            "models": {
+                "doubao-lite": {
+                    "name": "豆包-轻量版",
+                    "apiKey": "0c1210af-8aeb-47e5-a4c2-2844281b5355",
+                    "apiUrl": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+                    "modelId": "doubao-1-5-lite-32k-250115"
+                },
+                "doubao-pro": {
+                    "name": "DeepSeek-V3",
+                    "apiKey": "0c1210af-8aeb-47e5-a4c2-2844281b5355",
+                    "apiUrl": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+                    "modelId": "deepseek-v3-250324"
+                }
+            },
+            "defaultModel": "doubao-lite"
+        };
+
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = content;
+            element.style.display = 'block';
+        }
+
+        function checkConfig() {
+            try {
+                const result = `配置检查结果:
+✅ 系统提示词: ${config.systemPrompt}
+✅ 默认模型: ${config.defaultModel}
+✅ 可用模型数量: ${Object.keys(config.models).length}
+
+模型详情:
+${Object.entries(config.models).map(([key, model]) => 
+    `- ${key}: ${model.name} (${model.modelId})`
+).join('\n')}`;
+                
+                showResult('configResult', result, 'success');
+            } catch (error) {
+                showResult('configResult', `配置检查失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testConnection() {
+            try {
+                showResult('connectionResult', '正在测试连接...', 'info');
+                
+                const model = config.models[config.defaultModel];
+                const response = await fetch(model.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${model.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model.modelId,
+                        messages: [
+                            {"role": "system", "content": "你是人工智能助手."},
+                            {"role": "user", "content": "ping"}
+                        ],
+                        max_tokens: 10
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('connectionResult', `✅ 连接成功!\n状态码: ${response.status}\n响应: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorData = await response.text();
+                    showResult('connectionResult', `❌ 连接失败!\n状态码: ${response.status}\n错误: ${errorData}`, 'error');
+                }
+            } catch (error) {
+                showResult('connectionResult', `❌ 连接测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testChat() {
+            try {
+                const message = document.getElementById('testMessage').value;
+                if (!message.trim()) {
+                    showResult('chatResult', '请输入测试消息', 'error');
+                    return;
+                }
+
+                showResult('chatResult', '正在发送消息...', 'info');
+                
+                const model = config.models[config.defaultModel];
+                const response = await fetch(model.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${model.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model.modelId,
+                        messages: [
+                            {"role": "system", "content": config.systemPrompt},
+                            {"role": "user", "content": message}
+                        ],
+                        max_tokens: 500,
+                        temperature: 0.7
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const reply = data.choices[0].message.content;
+                    showResult('chatResult', `✅ 对话成功!\n\n用户: ${message}\nAI: ${reply}`, 'success');
+                } else {
+                    const errorData = await response.text();
+                    showResult('chatResult', `❌ 对话失败!\n状态码: ${response.status}\n错误: ${errorData}`, 'error');
+                }
+            } catch (error) {
+                showResult('chatResult', `❌ 对话测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testChatStream() {
+            try {
+                const message = document.getElementById('testMessage').value;
+                if (!message.trim()) {
+                    showResult('chatResult', '请输入测试消息', 'error');
+                    return;
+                }
+
+                showResult('chatResult', '正在进行流式对话...', 'info');
+                
+                const model = config.models[config.defaultModel];
+                const response = await fetch(model.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${model.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model.modelId,
+                        messages: [
+                            {"role": "system", "content": config.systemPrompt},
+                            {"role": "user", "content": message}
+                        ],
+                        max_tokens: 500,
+                        temperature: 0.7,
+                        stream: true
+                    })
+                });
+
+                if (response.ok) {
+                    const reader = response.body.getReader();
+                    let result = `✅ 流式对话成功!\n\n用户: ${message}\nAI: `;
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        const chunk = new TextDecoder().decode(value);
+                        const lines = chunk.split('\n').filter(line => line.trim());
+                        
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = line.slice(6);
+                                if (data === '[DONE]') continue;
+                                
+                                try {
+                                    const parsed = JSON.parse(data);
+                                    const content = parsed.choices[0]?.delta?.content;
+                                    if (content) {
+                                        result += content;
+                                        showResult('chatResult', result, 'success');
+                                    }
+                                } catch (e) {
+                                    // 忽略解析错误
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    const errorData = await response.text();
+                    showResult('chatResult', `❌ 流式对话失败!\n状态码: ${response.status}\n错误: ${errorData}`, 'error');
+                }
+            } catch (error) {
+                showResult('chatResult', `❌ 流式对话测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testModel(modelKey) {
+            try {
+                showResult('modelResult', `正在测试模型: ${config.models[modelKey].name}...`, 'info');
+                
+                const model = config.models[modelKey];
+                const response = await fetch(model.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${model.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model.modelId,
+                        messages: [
+                            {"role": "system", "content": "请简单介绍一下你自己"},
+                            {"role": "user", "content": "你好"}
+                        ],
+                        max_tokens: 100
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const reply = data.choices[0].message.content;
+                    showResult('modelResult', `✅ 模型 ${model.name} 测试成功!\n\n回复: ${reply}`, 'success');
+                } else {
+                    const errorData = await response.text();
+                    showResult('modelResult', `❌ 模型 ${model.name} 测试失败!\n状态码: ${response.status}\n错误: ${errorData}`, 'error');
+                }
+            } catch (error) {
+                showResult('modelResult', `❌ 模型测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 页面加载完成后自动检查配置
+        window.addEventListener('load', () => {
+            console.log('API测试页面已加载');
+            checkConfig();
+        });
+    </script>
+</body>
+</html>

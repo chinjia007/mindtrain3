@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字体测试页 - 喵喵助手</title>
+    <!-- 本地字体 -->
+    <style>
+        @font-face {
+            font-family: 'DaMengKaTongTi';
+            src: url('./fonts/DaMengKaTongTi.ttf') format('truetype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ZiHunDaHei-Heavy';
+            src: url('./fonts/ZiHunDaHei-Heavy.ttf') format('truetype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ShangShouZongYiTi';
+            src: url('./fonts/ShangShouZongYiTi.ttf') format('truetype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'YeZiGongChangGuaiJiaoHei';
+            src: url('./fonts/YeZiGongChangGuaiJiaoHei.ttf') format('truetype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AaBanShuZhiShi-JiaoTangXiaoMao';
+            src: url('./fonts/AaBanShuZhiShi-JiaoTangXiaoMao-2.ttf') format('truetype');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AaNianDuZuiKeAiJiang';
+            src: url('./fonts/AaNianDuZuiKeAiJiang.ttf') format('truetype');
+            font-display: swap;
+        }
+    </style>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .font-sample {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .font-sample:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .font-sample.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .font-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .font-sample.selected .font-name {
+            color: white;
+        }
+        
+        .font-type {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .font-sample.selected .font-type {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .sample-text {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .size-large {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        
+        .size-medium {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        
+        .size-small {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #666;
+        }
+        
+        .font-sample.selected .size-small {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .font-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 15px;
+        }
+        
+        .font-sample.selected .font-info {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .apply-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .apply-btn.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 字体测试页</h1>
+            <p>选择你最喜欢的字体，为喵喵助手打造最佳阅读体验</p>
+        </div>
+        
+        <!-- 大萌卡通体 -->
+        <div class="font-sample" data-font-id="DaMengKaTongTi" onclick="selectFont(this, 'DaMengKaTongTi')">
+            <div class="font-name">
+                大萌卡通体
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'DaMengKaTongTi', 'PingFang SC', 'Microsoft YaHei', cursive;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">可爱卡通风格，适合轻松愉快的学习场景</div>
+        </div>
+
+        <!-- 字魂大黑-Heavy -->
+        <div class="font-sample" data-font-id="ZiHunDaHei-Heavy" onclick="selectFont(this, 'ZiHunDaHei-Heavy')">
+            <div class="font-name">
+                字魂大黑-Heavy
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'ZiHunDaHei-Heavy', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">现代感强，专业美观，中文优化设计</div>
+        </div>
+
+        <!-- 上首综艺体 -->
+        <div class="font-sample" data-font-id="ShangShouZongYiTi" onclick="selectFont(this, 'ShangShouZongYiTi')">
+            <div class="font-name">
+                上首综艺体
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'ShangShouZongYiTi', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">活泼专业，平衡趣味性和可读性</div>
+        </div>
+
+        <!-- 叶子工厂怪角黑 -->
+        <div class="font-sample" data-font-id="YeZiGongChangGuaiJiaoHei" onclick="selectFont(this, 'YeZiGongChangGuaiJiaoHei')">
+            <div class="font-name">
+                叶子工厂怪角黑
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'YeZiGongChangGuaiJiaoHei', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">个性化设计，独特风格，富有创意</div>
+        </div>
+
+        <!-- 教堂小猫 -->
+        <div class="font-sample" data-font-id="AaBanShuZhiShi-JiaoTangXiaoMao" onclick="selectFont(this, 'AaBanShuZhiShi-JiaoTangXiaoMao')">
+            <div class="font-name">
+                教堂小猫
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'AaBanShuZhiShi-JiaoTangXiaoMao', 'PingFang SC', 'Microsoft YaHei', cursive;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">可爱温馨，符合喵喵助手的主题风格</div>
+        </div>
+
+        <!-- 年度最可爱奖 -->
+        <div class="font-sample" data-font-id="AaNianDuZuiKeAiJiang" onclick="selectFont(this, 'AaNianDuZuiKeAiJiang')">
+            <div class="font-name">
+                年度最可爱奖
+                <span class="font-type">本地字体</span>
+            </div>
+            <div style="font-family: 'AaNianDuZuiKeAiJiang', 'PingFang SC', 'Microsoft YaHei', cursive;">
+                <div class="sample-text size-large">你好，同学！我是你的学习伙伴，喜欢和你一起思考各种有趣的问题。</div>
+                <div class="sample-text size-medium">批判性思维是指对信息进行客观分析和评估的能力。</div>
+                <div class="sample-text size-small">0123456789 ABCDEFG abcdefg 《》？！：；""''</div>
+                <div class="sample-text size-small">这是一段较长的文本，用来测试字体在段落中的显示效果和可读性。</div>
+            </div>
+            <div class="font-info">超级可爱，充满童趣，适合轻松学习</div>
+        </div>
+    </div>
+    
+    <button class="apply-btn" id="applyBtn">应用选中字体</button>
+    
+    <script>
+        let selectedFontId = null;
+        
+        function selectFont(element, fontId) {
+            // 移除所有选中状态
+            document.querySelectorAll('.font-sample').forEach(sample => {
+                sample.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedFontId = fontId;
+            
+            // 显示应用按钮
+            document.getElementById('applyBtn').classList.add('show');
+        }
+        
+        function applyFont() {
+            if (!selectedFontId) return;
+            
+            const fontData = {
+                id: selectedFontId,
+                name: document.querySelector('[data-font-id="' + selectedFontId + '"] .font-name').textContent.trim()
+            };
+            
+            localStorage.setItem('selectedFont', JSON.stringify(fontData));
+            alert('字体已保存：' + fontData.name + '\n请返回主页面查看效果');
+        }
+        
+        // 绑定应用按钮
+        document.getElementById('applyBtn').addEventListener('click', applyFont);
+        
+        // 默认选中第一个
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstSample = document.querySelector('.font-sample');
+            if (firstSample) {
+                selectFont(firstSample, firstSample.getAttribute('data-font-id'));
+            }
+        });
+    </script>
+</body>
+</html>
